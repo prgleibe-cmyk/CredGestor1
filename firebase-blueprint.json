@@ -1,0 +1,68 @@
+{
+  "entities": {
+    "Customer": {
+      "title": "Customer",
+      "description": "A person who borrows money.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "document": { "type": "string", "description": "CPF or RG" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["name", "phone", "createdBy"]
+    },
+    "Loan": {
+      "title": "Loan",
+      "description": "A loan contract.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "amount": { "type": "number" },
+        "interestRate": { "type": "number", "description": "Percentage" },
+        "totalToPay": { "type": "number" },
+        "remainingAmount": { "type": "number" },
+        "installmentsCount": { "type": "integer" },
+        "frequency": { "type": "string", "enum": ["daily", "weekly", "monthly"] },
+        "startDate": { "type": "string", "format": "date" },
+        "status": { "type": "string", "enum": ["active", "paid", "overdue"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["customerId", "amount", "interestRate", "totalToPay", "installmentsCount", "frequency", "startDate", "status", "createdBy"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "A payment record for a loan.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "loanId": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "notes": { "type": "string" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["loanId", "amount", "date", "createdBy"]
+    }
+  },
+  "firestore": {
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Collection of customers."
+    },
+    "/loans/{loanId}": {
+      "schema": "Loan",
+      "description": "Collection of loans."
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Collection of payments."
+    }
+  }
+}
