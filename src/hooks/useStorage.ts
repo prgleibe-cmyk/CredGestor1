@@ -1,74 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Customer, Loan, Payment, Settings } from '../types';
-import { db, auth } from '../firebase';
-import { 
-  collection, 
-  addDoc, 
-  getDocs, 
-  query, 
-  where, 
-  onSnapshot, 
-  doc, 
-  getDoc,
-  updateDoc, 
-  deleteDoc, 
-  writeBatch,
-  getDocFromServer,
-  setDoc,
-  Timestamp,
-  orderBy
-} from 'firebase/firestore';
-
-enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
-}
-
-interface FirestoreErrorInfo {
-  error: string;
-  operationType: OperationType;
-  path: string | null;
-  authInfo: {
-    userId: string | undefined;
-    email: string | null | undefined;
-    emailVerified: boolean | undefined;
-    isAnonymous: boolean | undefined;
-    tenantId: string | null | undefined;
-    providerInfo: {
-      providerId: string;
-      displayName: string | null;
-      email: string | null;
-      photoUrl: string | null;
-    }[];
-  }
-}
-
-function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
-  const errInfo: FirestoreErrorInfo = {
-    error: error instanceof Error ? error.message : String(error),
-    authInfo: {
-      userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
-      isAnonymous: auth.currentUser?.isAnonymous,
-      tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData.map(provider => ({
-        providerId: provider.providerId,
-        displayName: provider.displayName,
-        email: provider.email,
-        photoUrl: provider.photoURL
-      })) || []
-    },
-    operationType,
-    path
-  }
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
-  throw new Error(JSON.stringify(errInfo));
-}
+import { supabase } from '../supabase';
 
 export function useStorage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -81,267 +13,367 @@ export function useStorage() {
     accentColor: '#16a34a'
   });
   const [loading, setLoading] = useState(true);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
-  const [dataLoaded, setDataLoaded] = useState(false);
+  const [user, setUser] = useState<any>(null);
 
-  const isLoading = loading || !settingsLoaded || !dataLoaded;
-
-  // Test connection
   useEffect(() => {
-    async function testConnection() {
-      try {
-        await getDocFromServer(doc(db, 'test', 'connection'));
-      } catch (error) {
-        if(error instanceof Error && error.message.includes('the client is offline')) {
-          console.error("Please check your Firebase configuration. ");
-        }
-      }
-    }
-    testConnection();
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
-    if (!auth.currentUser) {
+    if (!user) {
+      setCustomers([]);
+      setLoans([]);
+      setPayments([]);
       setLoading(false);
       return;
     }
 
-    setLoading(true);
-    const userId = auth.currentUser.uid;
-    
-    const customersQuery = query(
-      collection(db, 'customers'), 
-      where('createdBy', '==', userId)
-    );
-    const customersUnsubscribe = onSnapshot(customersQuery, (snapshot) => {
-      const customersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Customer));
-      setCustomers(customersData);
-      setLoading(false);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'customers');
-    });
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch Customers
+        const { data: customersData, error: customersError } = await supabase
+          .from('customers')
+          .select('*')
+          .order('name');
+        
+        if (customersError) throw customersError;
+        setCustomers((customersData || []).map(c => ({
+          id: c.id,
+          name: c.name,
+          phone: c.phone,
+          address: c.address,
+          document: c.document,
+          createdAt: c.created_at,
+          createdBy: c.user_id
+        })));
 
-    const loansQuery = query(
-      collection(db, 'loans'), 
-      where('createdBy', '==', userId)
-    );
-    const loansUnsubscribe = onSnapshot(loansQuery, (snapshot) => {
-      const loansData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Loan));
-      setLoans(loansData);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'loans');
-    });
+        // Fetch Loans
+        const { data: loansData, error: loansError } = await supabase
+          .from('loans')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (loansError) throw loansError;
+        setLoans((loansData || []).map(l => ({
+          id: l.id,
+          customerId: l.customer_id,
+          customerName: l.customer_name || '', // Assuming we might add this or join
+          amount: Number(l.amount),
+          interestRate: Number(l.interest_rate),
+          interestType: l.interest_type as any,
+          totalToPay: Number(l.total_to_pay),
+          remainingAmount: Number(l.remaining_amount),
+          installmentsCount: l.installments,
+          frequency: l.frequency as any,
+          startDate: l.start_date,
+          status: l.status as any,
+          createdAt: l.created_at,
+          createdBy: l.user_id
+        })));
 
-    const paymentsQuery = query(
-      collection(db, 'payments'), 
-      where('createdBy', '==', userId)
-    );
-    const paymentsUnsubscribe = onSnapshot(paymentsQuery, (snapshot) => {
-      const paymentsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Payment));
-      setPayments(paymentsData);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'payments');
-    });
+        // Fetch Payments
+        const { data: paymentsData, error: paymentsError } = await supabase
+          .from('payments')
+          .select('*')
+          .order('date', { ascending: false });
+        
+        if (paymentsError) throw paymentsError;
+        setPayments((paymentsData || []).map(p => ({
+          id: p.id,
+          loanId: p.loan_id,
+          amount: Number(p.amount),
+          date: p.date,
+          notes: p.notes || '',
+          createdBy: p.user_id
+        })));
 
-    const settingsDoc = doc(db, 'settings', userId);
-    const settingsUnsubscribe = onSnapshot(settingsDoc, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.data() as Settings;
-        setSettings(data);
-      } else {
-        // If doc doesn't exist, we keep the default state but mark as loaded
-        setSettings({
-          companyName: 'CredGestor',
-          defaultInterestRate: 10,
-          darkMode: false,
-          accentColor: '#16a34a'
-        });
+        // Fetch Settings
+        const { data: settingsData, error: settingsError } = await supabase
+          .from('settings')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (settingsError && settingsError.code !== 'PGRST116') throw settingsError;
+        if (settingsData) {
+          setSettings({
+            companyName: settingsData.company_name,
+            defaultInterestRate: Number(settingsData.default_interest_rate || 10),
+            document: settingsData.document,
+            address: settingsData.address,
+            phone: settingsData.phone,
+            logoUrl: settingsData.logo_url,
+            darkMode: settingsData.theme === 'dark',
+            accentColor: settingsData.accent_color || '#16a34a'
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching data from Supabase:', error);
+      } finally {
+        setLoading(false);
       }
-      setSettingsLoaded(true);
-    }, (error) => {
-      handleFirestoreError(error, OperationType.GET, 'settings');
-      setSettingsLoaded(true);
-    });
+    };
+
+    fetchData();
+
+    // Set up real-time subscriptions
+    const customersSubscription = supabase
+      .channel('public:customers')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, fetchData)
+      .subscribe();
+
+    const loansSubscription = supabase
+      .channel('public:loans')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'loans' }, fetchData)
+      .subscribe();
+
+    const paymentsSubscription = supabase
+      .channel('public:payments')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, fetchData)
+      .subscribe();
+
+    const settingsSubscription = supabase
+      .channel('public:settings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, fetchData)
+      .subscribe();
 
     return () => {
-      customersUnsubscribe();
-      loansUnsubscribe();
-      paymentsUnsubscribe();
-      settingsUnsubscribe();
+      customersSubscription.unsubscribe();
+      loansSubscription.unsubscribe();
+      paymentsSubscription.unsubscribe();
+      settingsSubscription.unsubscribe();
     };
-  }, [auth.currentUser]);
-
-  // Combined loading state
-  const isDataLoading = loading || !settingsLoaded;
+  }, [user]);
 
   const addCustomer = async (customer: Omit<Customer, 'id' | 'createdAt' | 'createdBy'>) => {
-    const newCustomer = {
-      ...customer,
-      createdAt: new Date().toISOString(),
-      createdBy: auth.currentUser?.uid || 'admin',
-    };
-
+    if (!user) return null;
     try {
-      const docRef = await addDoc(collection(db, 'customers'), newCustomer);
-      return { id: docRef.id, ...newCustomer };
+      const { data, error } = await supabase
+        .from('customers')
+        .insert([{ 
+          name: customer.name,
+          phone: customer.phone,
+          address: customer.address,
+          document: customer.document,
+          user_id: user.id 
+        }])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return {
+        ...data,
+        createdAt: data.created_at,
+        createdBy: data.user_id
+      };
     } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, 'customers');
+      console.error('Error adding customer:', error);
       return null;
     }
   };
 
   const updateCustomer = async (id: string, customerData: Partial<Customer>) => {
     try {
-      const docRef = doc(db, 'customers', id);
-      await updateDoc(docRef, customerData);
+      const { error } = await supabase
+        .from('customers')
+        .update({
+          name: customerData.name,
+          phone: customerData.phone,
+          address: customerData.address,
+          document: customerData.document
+        })
+        .eq('id', id);
+      
+      if (error) throw error;
       return true;
     } catch (error) {
-      handleFirestoreError(error, OperationType.UPDATE, 'customers');
+      console.error('Error updating customer:', error);
       return false;
     }
   };
 
   const deleteCustomer = async (id: string) => {
     try {
-      const batch = writeBatch(db);
+      const { error } = await supabase
+        .from('customers')
+        .delete()
+        .eq('id', id);
       
-      // Delete customer
-      batch.delete(doc(db, 'customers', id));
-      
-      // Delete associated loans and payments
-      const loansSnap = await getDocs(query(collection(db, 'loans'), where('customerId', '==', id)));
-      for (const loanDoc of loansSnap.docs) {
-        batch.delete(loanDoc.ref);
-        const paymentsSnap = await getDocs(query(collection(db, 'payments'), where('loanId', '==', loanDoc.id)));
-        paymentsSnap.forEach(p => batch.delete(p.ref));
-      }
-      
-      await batch.commit();
+      if (error) throw error;
       return true;
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, 'customers');
+      console.error('Error deleting customer:', error);
       return false;
     }
   };
 
-  const addLoan = async (loanData: Omit<Loan, 'id' | 'createdAt' | 'createdBy' | 'status' | 'remainingAmount'>) => {
-    const newLoan = {
-      ...loanData,
-      status: 'active',
-      remainingAmount: loanData.totalToPay,
-      createdAt: new Date().toISOString(),
-      createdBy: auth.currentUser?.uid || 'admin',
-    };
-
+  const addLoan = async (loan: Omit<Loan, 'id' | 'createdAt' | 'createdBy' | 'status' | 'remainingAmount'>) => {
+    if (!user) return null;
     try {
-      const docRef = await addDoc(collection(db, 'loans'), newLoan);
-      return { id: docRef.id, ...newLoan };
+      const { data, error } = await supabase
+        .from('loans')
+        .insert([{ 
+          customer_id: loan.customerId,
+          customer_name: loan.customerName,
+          amount: loan.amount,
+          interest_rate: loan.interestRate,
+          interest_type: loan.interestType,
+          total_to_pay: loan.totalToPay,
+          remaining_amount: loan.totalToPay,
+          installments: loan.installmentsCount,
+          frequency: loan.frequency,
+          start_date: loan.startDate,
+          status: 'active',
+          user_id: user.id
+        }])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return {
+        ...data,
+        customerId: data.customer_id,
+        customerName: data.customer_name,
+        totalToPay: data.total_to_pay,
+        remainingAmount: data.remaining_amount,
+        installmentsCount: data.installments,
+        createdAt: data.created_at,
+        createdBy: data.user_id
+      };
     } catch (error) {
-      handleFirestoreError(error, OperationType.CREATE, 'loans');
+      console.error('Error adding loan:', error);
       return null;
     }
   };
 
   const updateLoan = async (id: string, loanData: Partial<Loan>) => {
     try {
-      const docRef = doc(db, 'loans', id);
-      await updateDoc(docRef, loanData);
+      const updateData: any = {};
+      if (loanData.status) updateData.status = loanData.status;
+      if (loanData.remainingAmount !== undefined) updateData.remaining_amount = loanData.remainingAmount;
+
+      const { error } = await supabase
+        .from('loans')
+        .update(updateData)
+        .eq('id', id);
+      
+      if (error) throw error;
       return true;
     } catch (error) {
-      handleFirestoreError(error, OperationType.UPDATE, 'loans');
+      console.error('Error updating loan:', error);
       return false;
     }
   };
 
   const deleteLoan = async (id: string) => {
     try {
-      const batch = writeBatch(db);
-      batch.delete(doc(db, 'loans', id));
+      const { error } = await supabase
+        .from('loans')
+        .delete()
+        .eq('id', id);
       
-      const paymentsSnap = await getDocs(query(collection(db, 'payments'), where('loanId', '==', id)));
-      paymentsSnap.forEach(p => batch.delete(p.ref));
-      
-      await batch.commit();
+      if (error) throw error;
       return true;
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, 'loans');
+      console.error('Error deleting loan:', error);
       return false;
     }
   };
 
   const addPayment = async (paymentData: Omit<Payment, 'id' | 'createdBy'>) => {
-    console.log('addPayment called with:', paymentData);
-    const newPayment = {
-      ...paymentData,
-      createdBy: auth.currentUser?.uid || 'admin',
-    };
-    
+    if (!user) return null;
     try {
-      const batch = writeBatch(db);
-      const paymentRef = doc(collection(db, 'payments'));
-      batch.set(paymentRef, newPayment);
-
-      const loanRef = doc(db, 'loans', paymentData.loanId);
+      // 1. Add payment
+      const { data: payment, error: paymentError } = await supabase
+        .from('payments')
+        .insert([{ 
+          loan_id: paymentData.loanId,
+          amount: paymentData.amount,
+          date: paymentData.date,
+          notes: paymentData.notes,
+          user_id: user.id 
+        }])
+        .select()
+        .single();
       
-      // Fetch latest loan data directly to ensure accuracy
-      console.log('Fetching loan data for update...');
-      const loanSnap = await getDoc(loanRef);
-      
-      if (loanSnap.exists()) {
-        const loan = { id: loanSnap.id, ...loanSnap.data() } as Loan;
-        const remaining = loan.remainingAmount - paymentData.amount;
-        const status = remaining <= 0 ? 'paid' : loan.status;
-        
-        console.log('Updating loan:', loan.id, { remaining, status });
-        batch.update(loanRef, { 
-          remainingAmount: Math.max(0, remaining), 
-          status 
-        });
-      } else {
-        console.warn('Loan not found for payment update:', paymentData.loanId);
-      }
+      if (paymentError) throw paymentError;
 
-      console.log('Committing batch...');
-      await batch.commit();
-      console.log('Batch committed successfully');
-      return { id: paymentRef.id, ...newPayment };
+      // 2. Update loan remaining amount
+      const { data: loan, error: loanFetchError } = await supabase
+        .from('loans')
+        .select('remaining_amount, status')
+        .eq('id', paymentData.loanId)
+        .single();
+      
+      if (loanFetchError) throw loanFetchError;
+
+      const newRemaining = Math.max(0, Number(loan.remaining_amount) - paymentData.amount);
+      const newStatus = newRemaining <= 0 ? 'paid' : loan.status;
+
+      const { error: loanUpdateError } = await supabase
+        .from('loans')
+        .update({ 
+          remaining_amount: newRemaining,
+          status: newStatus
+        })
+        .eq('id', paymentData.loanId);
+      
+      if (loanUpdateError) throw loanUpdateError;
+
+      return {
+        ...payment,
+        loanId: payment.loan_id,
+        createdBy: payment.user_id
+      };
     } catch (error) {
-      console.error('Error in addPayment:', error);
-      handleFirestoreError(error, OperationType.WRITE, 'payments/loans');
+      console.error('Error adding payment:', error);
       return null;
     }
   };
 
   const clearAllData = async () => {
-    if (!auth.currentUser) return;
-    const userId = auth.currentUser.uid;
-
+    if (!user) return;
     try {
-      const batch = writeBatch(db);
-      
-      const paymentsSnap = await getDocs(query(collection(db, 'payments'), where('createdBy', '==', userId)));
-      paymentsSnap.forEach(d => batch.delete(d.ref));
-
-      const loansSnap = await getDocs(query(collection(db, 'loans'), where('createdBy', '==', userId)));
-      loansSnap.forEach(d => batch.delete(d.ref));
-
-      const customersSnap = await getDocs(query(collection(db, 'customers'), where('createdBy', '==', userId)));
-      customersSnap.forEach(d => batch.delete(d.ref));
-
-      await batch.commit();
+      await supabase.from('payments').delete().eq('user_id', user.id);
+      await supabase.from('loans').delete().eq('user_id', user.id);
+      await supabase.from('customers').delete().eq('user_id', user.id);
     } catch (error) {
-      handleFirestoreError(error, OperationType.DELETE, 'all');
+      console.error('Error clearing data:', error);
     }
   };
 
   const saveSettings = async (newSettings: Settings) => {
-    if (!auth.currentUser) return false;
+    if (!user) return false;
     try {
-      const settingsDoc = doc(db, 'settings', auth.currentUser.uid);
-      await setDoc(settingsDoc, newSettings);
+      const { error } = await supabase
+        .from('settings')
+        .upsert({ 
+          user_id: user.id,
+          company_name: newSettings.companyName,
+          default_interest_rate: newSettings.defaultInterestRate,
+          document: newSettings.document,
+          address: newSettings.address,
+          phone: newSettings.phone,
+          logo_url: newSettings.logoUrl,
+          theme: newSettings.darkMode ? 'dark' : 'light',
+          accent_color: newSettings.accentColor
+        });
+      
+      if (error) throw error;
       return true;
     } catch (error) {
-      handleFirestoreError(error, OperationType.WRITE, 'settings');
+      console.error('Error saving settings:', error);
       return false;
     }
   };
@@ -351,7 +383,7 @@ export function useStorage() {
     loans,
     payments,
     settings,
-    loading: isDataLoading,
+    loading,
     addCustomer,
     updateCustomer,
     deleteCustomer,

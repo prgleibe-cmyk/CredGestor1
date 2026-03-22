@@ -6,8 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStorage } from './hooks/useStorage';
 import { Loan, View, Customer } from './types';
-import { auth, signInWithGoogle, logout, onAuthStateChanged } from './firebase';
-import { User } from 'firebase/auth';
+import { supabase, signInWithGoogle, logout } from './supabase';
 import { motion } from 'motion/react';
 
 // Layout Components
@@ -55,7 +54,14 @@ function LoginScreen() {
         </p>
         
         <button 
-          onClick={signInWithGoogle}
+          onClick={async () => {
+            try {
+              await signInWithGoogle();
+            } catch (error: any) {
+              console.error('Erro ao entrar com Google:', error);
+              alert(`Erro ao entrar com Google: ${error.message || 'Erro desconhecido'}`);
+            }
+          }}
           className="group w-full flex items-center justify-center gap-4 bg-bg-card border border-border-main py-4 px-6 rounded-2xl hover:border-brand-500 hover:bg-brand-50/50 transition-all duration-300 font-bold text-text-main shadow-sm hover:shadow-brand-100"
         >
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6 group-hover:scale-110 transition-transform" />
@@ -74,7 +80,7 @@ function LoginScreen() {
 
 function AppContent() {
   const [activeView, setActiveView] = useState<View>('dashboard');
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   
   // Modal States
@@ -85,11 +91,19 @@ function AppContent() {
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setAuthLoading(false);
     });
-    return unsubscribe;
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setAuthLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   // Data Logic

@@ -1,5 +1,5 @@
 {
   "name": "CredGestor ",
-  "description": "Sistema intuitivo para gestão de empréstimos, cobranças e controle de clientes.",
+  "description": "Sistema intuitivo para gestão de empréstimos e cobranças, agora com infraestrutura robusta no Supabase.",
   "requestFramePermissions": []
 }
