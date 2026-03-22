@@ -3,7 +3,6 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { AnimatePresence, motion } from 'motion/react';
 import { View, Settings } from '../../types';
-import { User } from 'firebase/auth';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -11,7 +10,7 @@ interface MainLayoutProps {
   setActiveView: (view: View) => void;
   title: string;
   onNewLoan: () => void;
-  user: User;
+  user: any;
   onLogout: () => void;
   settings: Settings;
 }

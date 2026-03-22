@@ -12,14 +12,13 @@ import {
 } from 'lucide-react';
 import { View, Settings } from '../../types';
 import { motion, AnimatePresence } from 'motion/react';
-import { User } from 'firebase/auth';
 
 interface SidebarProps {
   activeView: View;
   setActiveView: (view: View) => void;
   isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
-  user: User;
+  user: any;
   onLogout: () => void;
   settings: Settings;
 }
@@ -176,15 +175,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div className="flex items-center gap-3 mb-4 px-1">
                 <div className="relative">
                   <img 
-                    src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}`} 
-                    alt={user.displayName || ''} 
+                    src={user.user_metadata?.avatar_url || user.photoURL || `https://ui-avatars.com/api/?name=${user.user_metadata?.full_name || user.displayName}`} 
+                    alt={user.user_metadata?.full_name || user.displayName || ''} 
                     className="w-10 h-10 rounded-2xl border-2 border-bg-card shadow-sm object-cover"
                     referrerPolicy="no-referrer"
                   />
                   <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-brand-500 border-2 border-bg-card rounded-full"></div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-text-main truncate font-display">{user.displayName}</p>
+                  <p className="text-sm font-bold text-text-main truncate font-display">{user.user_metadata?.full_name || user.displayName}</p>
                   <p className="text-[11px] text-text-muted truncate font-medium">{user.email}</p>
                 </div>
               </div>
