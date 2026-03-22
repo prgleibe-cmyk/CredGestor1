@@ -25,6 +25,7 @@
         "customerName": { "type": "string" },
         "amount": { "type": "number" },
         "interestRate": { "type": "number", "description": "Percentage" },
+        "interestType": { "type": "string", "enum": ["simple", "compound"] },
         "totalToPay": { "type": "number" },
         "remainingAmount": { "type": "number" },
         "installmentsCount": { "type": "integer" },
@@ -34,7 +35,7 @@
         "createdAt": { "type": "string", "format": "date-time" },
         "createdBy": { "type": "string" }
       },
-      "required": ["customerId", "amount", "interestRate", "totalToPay", "installmentsCount", "frequency", "startDate", "status", "createdBy"]
+      "required": ["customerId", "amount", "interestRate", "interestType", "totalToPay", "installmentsCount", "frequency", "startDate", "status", "createdBy"]
     },
     "Payment": {
       "title": "Payment",
@@ -49,9 +50,27 @@
         "createdBy": { "type": "string" }
       },
       "required": ["loanId", "amount", "date", "createdBy"]
+    },
+    "Settings": {
+      "title": "Settings",
+      "description": "User settings.",
+      "type": "object",
+      "properties": {
+        "companyName": { "type": "string" },
+        "defaultInterestRate": { "type": "number" },
+        "document": { "type": "string", "description": "CPF or CNPJ" },
+        "address": { "type": "string" },
+        "phone": { "type": "string" },
+        "logoUrl": { "type": "string" }
+      },
+      "required": ["companyName", "defaultInterestRate"]
     }
   },
   "firestore": {
+    "/settings/{userId}": {
+      "schema": "Settings",
+      "description": "User settings."
+    },
     "/customers/{customerId}": {
       "schema": "Customer",
       "description": "Collection of customers."

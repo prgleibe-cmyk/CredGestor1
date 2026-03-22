@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { X } from 'lucide-react';
 import { motion } from 'motion/react';
-import { Customer, Loan, Frequency } from '../../types';
+import { Customer, Loan, Frequency, Settings, InterestType } from '../../types';
 import { formatCurrency } from '../../utils/formatters';
 
 interface LoanModalProps {
@@ -9,21 +9,41 @@ interface LoanModalProps {
   onClose: () => void;
   customers: Customer[];
   onSave: (loan: Omit<Loan, 'id' | 'createdAt' | 'createdBy' | 'status' | 'remainingAmount'>) => void;
+  settings: Settings;
 }
 
-export function LoanModal({ isOpen, onClose, customers, onSave }: LoanModalProps) {
+export function LoanModal({ isOpen, onClose, customers, onSave, settings }: LoanModalProps) {
   const [formData, setFormData] = useState({
     customerId: '',
     amount: 0,
-    interestRate: 10,
+    interestRate: settings.defaultInterestRate,
+    interestType: 'simple' as InterestType,
     installmentsCount: 1,
     frequency: 'monthly' as Frequency,
     startDate: new Date().toISOString().split('T')[0]
   });
 
+  React.useEffect(() => {
+    if (isOpen) {
+      setFormData(prev => ({
+        ...prev,
+        interestRate: settings.defaultInterestRate
+      }));
+    }
+  }, [isOpen, settings.defaultInterestRate]);
+
   const totalToPay = useMemo(() => {
-    return formData.amount + (formData.amount * (formData.interestRate / 100));
-  }, [formData.amount, formData.interestRate]);
+    const { amount, interestRate, interestType, installmentsCount } = formData;
+    if (!amount) return 0;
+    
+    if (interestType === 'simple') {
+      // Simple Interest: Principal + (Principal * Rate * Time)
+      return amount + (amount * (interestRate / 100) * installmentsCount);
+    } else {
+      // Compound Interest: Principal * (1 + Rate)^Time
+      return amount * Math.pow(1 + (interestRate / 100), installmentsCount);
+    }
+  }, [formData.amount, formData.interestRate, formData.interestType, formData.installmentsCount]);
 
   if (!isOpen) return null;
 
@@ -40,20 +60,20 @@ export function LoanModal({ isOpen, onClose, customers, onSave }: LoanModalProps
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden">
       <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden"
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl flex flex-col max-h-[90vh]"
       >
-        <div className="p-6 border-b border-neutral-100 flex justify-between items-center">
+        <div className="p-6 border-b border-neutral-100 flex justify-between items-center shrink-0">
           <h3 className="text-xl font-bold">Novo Empréstimo</h3>
           <button onClick={onClose} className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
             <X size={20} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-1">Cliente</label>
             <select 
@@ -87,10 +107,35 @@ export function LoanModal({ isOpen, onClose, customers, onSave }: LoanModalProps
                 type="number" 
                 required
                 min="0"
+                step="0.01"
                 value={formData.interestRate}
                 onChange={e => setFormData({...formData, interestRate: Number(e.target.value)})}
                 className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
               />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-2">Tipo de Juros</label>
+            <div className="flex p-1 bg-neutral-100 rounded-xl w-full">
+              <button
+                type="button"
+                onClick={() => setFormData({...formData, interestType: 'simple'})}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                  formData.interestType === 'simple' ? 'bg-white text-emerald-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
+                }`}
+              >
+                Fixo (Simples)
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({...formData, interestType: 'compound'})}
+                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
+                  formData.interestType === 'compound' ? 'bg-white text-emerald-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
+                }`}
+              >
+                Composto
+              </button>
             </div>
           </div>
 
@@ -141,12 +186,14 @@ export function LoanModal({ isOpen, onClose, customers, onSave }: LoanModalProps
             </p>
           </div>
 
-          <button 
-            type="submit"
-            className="w-full py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200 mt-4"
-          >
-            Criar Empréstimo
-          </button>
+          <div className="pt-2">
+            <button 
+              type="submit"
+              className="w-full py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
+            >
+              Criar Empréstimo
+            </button>
+          </div>
         </form>
       </motion.div>
     </div>

@@ -1,1 +1,83 @@
 @import "tailwindcss";
+
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  aside, 
+  header, 
+  nav, 
+  button, 
+  .no-print,
+  .sidebar-toggle {
+    display: none !important;
+  }
+  
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+  
+  .bg-white {
+    background-color: white !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  
+  .shadow-sm, .shadow-md, .shadow-lg {
+    box-shadow: none !important;
+  }
+  
+  .rounded-2xl, .rounded-xl, .rounded-lg {
+    border-radius: 0 !important;
+  }
+  
+  .border {
+    border: 1px solid #e5e5e5 !important;
+  }
+  
+  body {
+    background-color: white !important;
+    color: black !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure tables print correctly */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 1rem !important;
+  }
+
+  th, td {
+    border: 1px solid #e5e5e5 !important;
+    padding: 8px !important;
+    text-align: left !important;
+  }
+
+  .print-header {
+    display: block !important;
+    margin-bottom: 2rem !important;
+    text-align: center !important;
+  }
+
+  /* Layout adjustments for print */
+  .grid {
+    display: block !important;
+  }
+
+  .grid > div {
+    margin-bottom: 1.5rem !important;
+    page-break-inside: avoid !important;
+    width: 100% !important;
+  }
+
+  /* Fix for stats cards in print */
+  .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 > div {
+    border: 1px solid #e5e5e5 !important;
+    padding: 1rem !important;
+  }
+}

@@ -16,7 +16,9 @@ export function LoansView({ loans, onPayment }: LoansViewProps) {
           <div className="flex justify-between items-start mb-4">
             <div>
               <h4 className="font-bold text-lg">{loan.customerName}</h4>
-              <p className="text-xs text-neutral-500 uppercase tracking-wider font-medium">{loan.frequency} • {loan.installmentsCount} parcelas</p>
+              <p className="text-xs text-neutral-500 uppercase tracking-wider font-medium">
+                {loan.frequency} • {loan.installmentsCount} parcelas • {loan.interestType === 'simple' ? 'Fixo' : 'Composto'}
+              </p>
             </div>
             <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${
               loan.status === 'active' ? 'bg-emerald-50 text-emerald-600' : 

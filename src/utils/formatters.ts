@@ -18,3 +18,13 @@ export const formatDateTime = (dateString: string) => {
     minute: '2-digit',
   });
 };
+
+export const formatPhoneForWhatsApp = (phone: string) => {
+  // Remove all non-numeric characters
+  const cleaned = phone.replace(/\D/g, '');
+  // If it doesn't start with a country code (assuming Brazil 55 for now if it has 10 or 11 digits)
+  if (cleaned.length === 10 || cleaned.length === 11) {
+    return `55${cleaned}`;
+  }
+  return cleaned;
+};

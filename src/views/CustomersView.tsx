@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
-import { Search, UserPlus, History } from 'lucide-react';
-import { Customer, Loan } from '../types';
+import { Search, UserPlus, History, Eye } from 'lucide-react';
+import { Customer, Loan, Payment } from '../types';
+import { CustomerDetailsModal } from '../components/Modals/CustomerDetailsModal';
 
 interface CustomersViewProps {
   customers: Customer[];
   loans: Loan[];
+  payments: Payment[];
   onAdd: () => void;
+  onRegisterPayment: (loan: Loan) => void;
+  onEdit: (customer: Customer) => void;
+  onDelete: (customerId: string) => void;
 }
 
-export function CustomersView({ customers, loans, onAdd }: CustomersViewProps) {
+export function CustomersView({ customers, loans, payments, onAdd, onRegisterPayment, onEdit, onDelete }: CustomersViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const filteredCustomers = customers.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.phone.includes(searchTerm)
+    c.phone.includes(searchTerm) ||
+    c.document.includes(searchTerm)
   );
 
   return (
@@ -44,6 +51,7 @@ export function CustomersView({ customers, loans, onAdd }: CustomersViewProps) {
           <thead className="bg-neutral-50 text-neutral-500 text-xs uppercase tracking-wider">
             <tr>
               <th className="px-6 py-4 font-medium">Nome</th>
+              <th className="px-6 py-4 font-medium">CPF</th>
               <th className="px-6 py-4 font-medium">Telefone</th>
               <th className="px-6 py-4 font-medium">Empréstimos</th>
               <th className="px-6 py-4 font-medium">Status</th>
@@ -57,16 +65,21 @@ export function CustomersView({ customers, loans, onAdd }: CustomersViewProps) {
               const hasOverdue = customerLoans.some(l => l.status === 'overdue');
 
               return (
-                <tr key={customer.id} className="hover:bg-neutral-50 transition-colors">
+                <tr 
+                  key={customer.id} 
+                  className="hover:bg-neutral-50 transition-colors cursor-pointer group"
+                  onClick={() => setSelectedCustomer(customer)}
+                >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold">
+                      <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center text-xs font-bold group-hover:bg-emerald-600 group-hover:text-white transition-all">
                         {customer.name.charAt(0)}
                       </div>
                       <span className="font-medium text-neutral-700">{customer.name}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-neutral-500 text-sm">{customer.phone}</td>
+                  <td className="px-6 py-4 text-neutral-500 text-sm font-mono">{customer.document}</td>
+                  <td className="px-6 py-4 text-neutral-500 text-sm">{customer.phone || '-'}</td>
                   <td className="px-6 py-4 text-neutral-500 text-sm">{activeLoans} ativos</td>
                   <td className="px-6 py-4">
                     {hasOverdue ? (
@@ -76,21 +89,52 @@ export function CustomersView({ customers, loans, onAdd }: CustomersViewProps) {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <button className="text-neutral-400 hover:text-emerald-600 transition-colors">
-                      <History size={18} />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        className="p-2 text-neutral-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                        title="Ver Detalhes"
+                      >
+                        <Eye size={18} />
+                      </button>
+                      <button 
+                        className="p-2 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                        title="Histórico"
+                      >
+                        <History size={18} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
             })}
             {filteredCustomers.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-6 py-8 text-center text-neutral-400">Nenhum cliente encontrado.</td>
+                <td colSpan={6} className="px-6 py-8 text-center text-neutral-400">Nenhum cliente encontrado.</td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
+
+      <CustomerDetailsModal 
+        isOpen={!!selectedCustomer}
+        onClose={() => setSelectedCustomer(null)}
+        customer={selectedCustomer}
+        loans={loans}
+        payments={payments}
+        onRegisterPayment={(loan) => {
+          setSelectedCustomer(null);
+          onRegisterPayment(loan);
+        }}
+        onEdit={(customer) => {
+          setSelectedCustomer(null);
+          onEdit(customer);
+        }}
+        onDelete={(id) => {
+          setSelectedCustomer(null);
+          onDelete(id);
+        }}
+      />
     </div>
   );
 }
