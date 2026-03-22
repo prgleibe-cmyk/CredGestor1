@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'motion/react';
 import { Trash2, Download, Database, CheckCircle2, FileSpreadsheet, FileText as FilePdf } from 'lucide-react';
 import { ConfirmModal } from '../components/Modals/ConfirmModal';
 import { Settings } from '../types';
@@ -137,199 +138,287 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
   };
 
   return (
-    <div className="max-w-2xl bg-white p-8 rounded-2xl border border-neutral-200 shadow-sm">
-      <div className="flex justify-between items-center mb-6">
-        <h3 className="text-xl font-bold">Configurações do Sistema</h3>
+    <div className="w-full max-w-3xl glass p-8 md:p-10 rounded-[3rem] border border-white/40 neo-shadow">
+      <div className="flex justify-between items-center mb-10">
+        <h3 className="text-3xl font-display font-black text-slate-900 tracking-tight">Configurações</h3>
         {showSuccess && (
-          <div className="flex items-center gap-2 text-emerald-600 animate-in fade-in slide-in-from-top-2">
-            <CheckCircle2 size={18} />
-            <span className="text-sm font-bold">Salvo com sucesso!</span>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 px-4 py-2 bg-brand-50 text-brand-600 rounded-2xl border border-brand-100 shadow-sm"
+          >
+            <CheckCircle2 size={20} />
+            <span className="text-sm font-black uppercase tracking-widest">Salvo!</span>
+          </motion.div>
         )}
       </div>
       
-      <div className="space-y-8">
-        <section>
-          <h4 className="text-sm font-bold text-neutral-400 uppercase tracking-widest mb-4">Geral</h4>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">Nome da Empresa / Pessoal</label>
-                <input 
-                  type="text" 
-                  value={formData.companyName} 
-                  onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                  className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20" 
-                  placeholder="Ex: CredGestor Soluções"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">CPF ou CNPJ</label>
-                <input 
-                  type="text" 
-                  value={formData.document || ''} 
-                  onChange={(e) => setFormData({ ...formData, document: e.target.value })}
-                  className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20" 
-                  placeholder="00.000.000/0001-00"
-                />
-              </div>
+      <div className="space-y-10">
+        <section className="space-y-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-brand-100 rounded-xl text-brand-600">
+              <Database size={18} />
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">Telefone de Contato</label>
-                <input 
-                  type="text" 
-                  value={formData.phone || ''} 
-                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20" 
-                  placeholder="(00) 00000-0000"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 mb-2">Taxa de Juros Padrão (%)</label>
-                <input 
-                  type="number" 
-                  value={formData.defaultInterestRate} 
-                  onChange={(e) => setFormData({ ...formData, defaultInterestRate: Number(e.target.value) })}
-                  className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20" 
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2">Endereço Completo</label>
+            <h4 className="text-[11px] font-black text-text-muted uppercase tracking-[0.2em]">Geral do Sistema</h4>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Nome da Empresa / Pessoal</label>
               <input 
                 type="text" 
-                value={formData.address || ''} 
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20" 
-                placeholder="Rua, Número, Bairro, Cidade - UF"
+                value={formData.companyName} 
+                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                placeholder="Ex: CredGestor Soluções"
               />
             </div>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">CPF ou CNPJ</label>
+              <input 
+                type="text" 
+                value={formData.document || ''} 
+                onChange={(e) => setFormData({ ...formData, document: e.target.value })}
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                placeholder="00.000.000/0001-00"
+              />
+            </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-2">Logomarca da Empresa (PNG/JPG)</label>
-              <div className="flex items-center gap-4">
-                {formData.logoUrl && (
-                  <div className="relative group">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Telefone de Contato</label>
+              <input 
+                type="text" 
+                value={formData.phone || ''} 
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                placeholder="(00) 00000-0000"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Taxa de Juros Padrão (%)</label>
+              <input 
+                type="number" 
+                value={formData.defaultInterestRate} 
+                onChange={(e) => setFormData({ ...formData, defaultInterestRate: Number(e.target.value) })}
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Endereço Completo</label>
+            <input 
+              type="text" 
+              value={formData.address || ''} 
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+              placeholder="Rua, Número, Bairro, Cidade - UF"
+            />
+          </div>
+
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Logomarca da Empresa</label>
+            <div className="flex items-center gap-6">
+              {formData.logoUrl && (
+                <div className="relative group shrink-0">
+                  <div className="w-24 h-24 p-3 bg-white rounded-[2rem] border border-border-main neo-shadow-sm flex items-center justify-center overflow-hidden">
                     <img 
                       src={formData.logoUrl} 
                       alt="Logo Preview" 
-                      className="w-20 h-20 object-contain rounded-xl border border-neutral-200 bg-neutral-50"
+                      className="w-full h-full object-contain"
                       referrerPolicy="no-referrer"
                     />
-                    <button 
-                      onClick={() => setFormData({ ...formData, logoUrl: '' })}
-                      className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                    >
-                      <Trash2 size={12} />
-                    </button>
                   </div>
-                )}
-                <label className={`flex-1 flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl cursor-pointer transition-all ${
-                  formData.logoUrl ? 'border-neutral-200 hover:border-emerald-500' : 'border-emerald-200 bg-emerald-50/30 hover:bg-emerald-50'
-                }`}>
-                  <div className="flex flex-col items-center gap-2">
-                    <Download size={24} className="text-emerald-600" />
-                    <span className="text-sm font-medium text-neutral-600">
-                      {formData.logoUrl ? 'Alterar Logomarca' : 'Carregar Logomarca'}
-                    </span>
-                    <span className="text-[10px] text-neutral-400">PNG ou JPG até 1MB</span>
+                  <button 
+                    onClick={() => setFormData({ ...formData, logoUrl: '' })}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg hover:scale-110 active:scale-90"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              )}
+              <label className={`flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2rem] cursor-pointer transition-all active:scale-[0.98] ${
+                formData.logoUrl ? 'border-border-main hover:border-brand-500' : 'border-brand-200 bg-brand-50/30 hover:bg-brand-50'
+              }`}>
+                <div className="flex flex-col items-center gap-2 text-center">
+                  <div className="p-3 bg-white rounded-2xl shadow-sm mb-1">
+                    <Download size={24} className="text-brand-600" />
                   </div>
-                  <input 
-                    type="file" 
-                    accept="image/png, image/jpeg"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        if (file.size > 1024 * 1024) {
-                          alert('A imagem deve ter no máximo 1MB');
-                          return;
-                        }
-                        const reader = new FileReader();
-                        reader.onloadend = () => {
-                          setFormData({ ...formData, logoUrl: reader.result as string });
-                        };
-                        reader.readAsDataURL(file);
+                  <span className="text-sm font-black uppercase tracking-tight text-text-main">
+                    {formData.logoUrl ? 'Alterar Logomarca' : 'Carregar Logomarca'}
+                  </span>
+                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-widest">PNG ou JPG até 1MB</span>
+                </div>
+                <input 
+                  type="file" 
+                  accept="image/png, image/jpeg"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      if (file.size > 1024 * 1024) {
+                        alert('A imagem deve ter no máximo 1MB');
+                        return;
                       }
-                    }}
-                  />
-                </label>
-              </div>
-              <p className="text-[10px] text-neutral-400 mt-2">Esta imagem aparecerá na barra lateral e nos futuros comprovantes.</p>
-            </div>
-
-            <div className="pt-2">
-              <button 
-                onClick={handleSave}
-                disabled={isSaving}
-                className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                {isSaving ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Salvando...
-                  </>
-                ) : (
-                  'Salvar Alterações'
-                )}
-              </button>
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData({ ...formData, logoUrl: reader.result as string });
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                />
+              </label>
             </div>
           </div>
         </section>
 
-        <section className="pt-8 border-t border-neutral-100">
-          <h4 className="text-sm font-bold text-neutral-400 uppercase tracking-widest mb-4">Exportação de Dados</h4>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <section className="pt-10 border-t border-border-main/50 space-y-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-indigo-100 rounded-xl text-indigo-600">
+              <CheckCircle2 size={18} />
+            </div>
+            <h4 className="text-[11px] font-black text-text-muted uppercase tracking-[0.2em]">Personalização Visual</h4>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div className="space-y-4">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Modo de Exibição</label>
+              <div className="flex p-1 bg-bg-main border border-border-main rounded-2xl">
+                <button 
+                  onClick={() => setFormData({ ...formData, darkMode: false })}
+                  className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${!formData.darkMode ? 'bg-white neo-shadow text-brand-600' : 'text-text-muted hover:text-text-main'}`}
+                >
+                  Claro
+                </button>
+                <button 
+                  onClick={() => setFormData({ ...formData, darkMode: true })}
+                  className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${formData.darkMode ? 'bg-slate-800 neo-shadow text-white' : 'text-text-muted hover:text-text-main'}`}
+                >
+                  Escuro
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Cor de Destaque</label>
+              <div className="flex flex-wrap gap-3">
+                {[
+                  { name: 'Esmeralda', color: '#16a34a' },
+                  { name: 'Azul', color: '#2563eb' },
+                  { name: 'Violeta', color: '#7c3aed' },
+                  { name: 'Rosa', color: '#db2777' },
+                  { name: 'Laranja', color: '#ea580c' },
+                  { name: 'Slate', color: '#475569' },
+                ].map((c) => (
+                  <button
+                    key={c.color}
+                    onClick={() => setFormData({ ...formData, accentColor: c.color })}
+                    className={`w-10 h-10 rounded-full border-4 transition-all hover:scale-110 active:scale-90 ${formData.accentColor === c.color ? 'border-white ring-2 ring-brand-500 shadow-lg' : 'border-transparent'}`}
+                    style={{ backgroundColor: c.color }}
+                    title={c.name}
+                  />
+                ))}
+                <div className="relative">
+                  <input 
+                    type="color" 
+                    value={formData.accentColor || '#16a34a'}
+                    onChange={(e) => setFormData({ ...formData, accentColor: e.target.value })}
+                    className="w-10 h-10 rounded-full border-none p-0 cursor-pointer overflow-hidden opacity-0 absolute inset-0"
+                  />
+                  <div 
+                    className="w-10 h-10 rounded-full border-2 border-border-main flex items-center justify-center bg-white text-text-muted text-[10px] font-black"
+                    style={{ borderStyle: 'dashed' }}
+                  >
+                    +
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="pt-4">
+          <button 
+            onClick={handleSave}
+            disabled={isSaving}
+            className="w-full md:w-auto px-10 py-5 bg-brand-600 text-white font-black rounded-[2rem] hover:bg-brand-700 transition-all shadow-xl shadow-brand-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg tracking-tight active:scale-95"
+          >
+            {isSaving ? (
+              <>
+                <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
+                Salvando...
+              </>
+            ) : (
+              'Salvar Alterações'
+            )}
+          </button>
+        </div>
+
+        <section className="pt-10 border-t border-slate-100/50 space-y-6">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-slate-100 rounded-xl text-slate-600">
+              <Download size={18} />
+            </div>
+            <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Exportação & Backup</h4>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button 
               onClick={handleExportExcel}
-              className="flex flex-col items-center gap-2 p-4 bg-neutral-50 border border-neutral-200 rounded-2xl hover:bg-neutral-100 transition-all text-neutral-700 font-medium"
+              className="group flex flex-col items-center gap-4 p-6 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] hover:bg-white hover:neo-shadow transition-all active:scale-95"
             >
-              <div className="p-2 bg-white rounded-lg border border-neutral-200">
-                <FileSpreadsheet size={24} className="text-emerald-600" />
+              <div className="p-4 bg-white rounded-2xl border border-slate-100 group-hover:bg-emerald-50 group-hover:border-emerald-100 transition-colors">
+                <FileSpreadsheet size={28} className="text-emerald-600" />
               </div>
-              <span className="text-sm">Excel (CSV)</span>
+              <span className="text-xs font-black uppercase tracking-widest text-slate-600">Excel (CSV)</span>
             </button>
 
             <button 
               onClick={handleExportPdf}
-              className="flex flex-col items-center gap-2 p-4 bg-neutral-50 border border-neutral-200 rounded-2xl hover:bg-neutral-100 transition-all text-neutral-700 font-medium"
+              className="group flex flex-col items-center gap-4 p-6 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] hover:bg-white hover:neo-shadow transition-all active:scale-95"
             >
-              <div className="p-2 bg-white rounded-lg border border-neutral-200">
-                <FilePdf size={24} className="text-red-600" />
+              <div className="p-4 bg-white rounded-2xl border border-slate-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
+                <FilePdf size={28} className="text-red-600" />
               </div>
-              <span className="text-sm">PDF Geral</span>
+              <span className="text-xs font-black uppercase tracking-widest text-slate-600">PDF Geral</span>
             </button>
 
             <button 
               onClick={handleExport}
-              className="flex flex-col items-center gap-2 p-4 bg-neutral-50 border border-neutral-200 rounded-2xl hover:bg-neutral-100 transition-all text-neutral-700 font-medium"
+              className="group flex flex-col items-center gap-4 p-6 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] hover:bg-white hover:neo-shadow transition-all active:scale-95"
             >
-              <div className="p-2 bg-white rounded-lg border border-neutral-200">
-                <Database size={24} className="text-blue-600" />
+              <div className="p-4 bg-white rounded-2xl border border-slate-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+                <Database size={28} className="text-blue-600" />
               </div>
-              <span className="text-sm">Backup (JSON)</span>
+              <span className="text-xs font-black uppercase tracking-widest text-slate-600">Backup (JSON)</span>
             </button>
           </div>
-          <p className="text-[10px] text-neutral-400 mt-4 text-center">
+          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center leading-relaxed max-w-md mx-auto">
             O arquivo JSON é o único que pode ser usado para restaurar dados no futuro. Excel e PDF são para conferência humana.
           </p>
         </section>
 
-        <section className="pt-8 border-t border-neutral-100">
-          <h4 className="text-red-600 font-bold mb-4">Zona de Perigo</h4>
+        <section className="pt-10 border-t border-slate-100/50">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-red-50 rounded-xl text-red-600">
+              <Trash2 size={18} />
+            </div>
+            <h4 className="text-[11px] font-black text-red-400 uppercase tracking-[0.2em]">Zona de Perigo</h4>
+          </div>
+          
           <button 
             onClick={() => setIsConfirmOpen(true)}
-            className="flex items-center gap-3 text-red-600 hover:bg-red-50 p-4 rounded-2xl transition-all w-full border border-transparent hover:border-red-100"
+            className="flex items-center gap-6 p-6 bg-red-50/30 hover:bg-red-50 rounded-[2.5rem] transition-all w-full border border-red-100/50 hover:border-red-200 group active:scale-[0.99]"
           >
-            <div className="p-2 bg-white rounded-lg border border-red-100">
-              <Trash2 size={20} />
+            <div className="p-4 bg-white rounded-2xl border border-red-100 shadow-sm group-hover:scale-110 transition-transform">
+              <Trash2 size={24} className="text-red-600" />
             </div>
             <div className="flex flex-col items-start">
-              <span>Limpar Todos os Dados</span>
-              <span className="text-xs text-red-400">Esta ação não pode ser desfeita</span>
+              <span className="text-lg font-black text-red-900 tracking-tight">Limpar Todos os Dados</span>
+              <span className="text-xs text-red-500 font-bold uppercase tracking-widest">Esta ação não pode ser desfeita</span>
             </div>
           </button>
         </section>

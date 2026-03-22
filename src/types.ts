@@ -53,6 +53,8 @@ export interface Settings {
   address?: string;
   phone?: string;
   logoUrl?: string;
+  darkMode?: boolean;
+  accentColor?: string;
 }
 
 export type View = 'dashboard' | 'customers' | 'loans' | 'history' | 'settings' | 'reports';

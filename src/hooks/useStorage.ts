@@ -9,6 +9,7 @@ import {
   where, 
   onSnapshot, 
   doc, 
+  getDoc,
   updateDoc, 
   deleteDoc, 
   writeBatch,
@@ -75,7 +76,9 @@ export function useStorage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [settings, setSettings] = useState<Settings>({
     companyName: 'CredGestor',
-    defaultInterestRate: 10
+    defaultInterestRate: 10,
+    darkMode: false,
+    accentColor: '#16a34a'
   });
   const [loading, setLoading] = useState(true);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
@@ -149,7 +152,9 @@ export function useStorage() {
         // If doc doesn't exist, we keep the default state but mark as loaded
         setSettings({
           companyName: 'CredGestor',
-          defaultInterestRate: 10
+          defaultInterestRate: 10,
+          darkMode: false,
+          accentColor: '#16a34a'
         });
       }
       setSettingsLoaded(true);
@@ -265,6 +270,7 @@ export function useStorage() {
   };
 
   const addPayment = async (paymentData: Omit<Payment, 'id' | 'createdBy'>) => {
+    console.log('addPayment called with:', paymentData);
     const newPayment = {
       ...paymentData,
       createdBy: auth.currentUser?.uid || 'admin',
@@ -276,20 +282,31 @@ export function useStorage() {
       batch.set(paymentRef, newPayment);
 
       const loanRef = doc(db, 'loans', paymentData.loanId);
-      const loan = loans.find(l => l.id === paymentData.loanId);
       
-      if (loan) {
+      // Fetch latest loan data directly to ensure accuracy
+      console.log('Fetching loan data for update...');
+      const loanSnap = await getDoc(loanRef);
+      
+      if (loanSnap.exists()) {
+        const loan = { id: loanSnap.id, ...loanSnap.data() } as Loan;
         const remaining = loan.remainingAmount - paymentData.amount;
         const status = remaining <= 0 ? 'paid' : loan.status;
+        
+        console.log('Updating loan:', loan.id, { remaining, status });
         batch.update(loanRef, { 
           remainingAmount: Math.max(0, remaining), 
           status 
         });
+      } else {
+        console.warn('Loan not found for payment update:', paymentData.loanId);
       }
 
+      console.log('Committing batch...');
       await batch.commit();
+      console.log('Batch committed successfully');
       return { id: paymentRef.id, ...newPayment };
     } catch (error) {
+      console.error('Error in addPayment:', error);
       handleFirestoreError(error, OperationType.WRITE, 'payments/loans');
       return null;
     }

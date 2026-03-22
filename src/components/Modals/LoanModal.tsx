@@ -60,27 +60,37 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm overflow-hidden">
+    <div 
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 backdrop-blur-md overflow-hidden"
+      onClick={onClose}
+    >
       <motion.div 
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="bg-white w-full max-w-lg rounded-3xl shadow-2xl flex flex-col max-h-[90vh]"
+        initial={{ y: "100%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: "100%", opacity: 0 }}
+        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        onClick={(e) => e.stopPropagation()}
+        className="bg-white w-full max-w-lg rounded-t-[3rem] md:rounded-[3rem] shadow-2xl flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-slate-200/60 relative"
       >
-        <div className="p-6 border-b border-neutral-100 flex justify-between items-center shrink-0">
-          <h3 className="text-xl font-bold">Novo Empréstimo</h3>
-          <button onClick={onClose} className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
-            <X size={20} />
+        <div className="p-6 md:p-8 border-b border-border-main flex justify-between items-center gap-4 shrink-0 rounded-t-[3rem] md:rounded-t-[3rem] bg-bg-main/50">
+          <div className="md:hidden absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-border-main rounded-full" />
+          <h3 className="text-2xl font-display font-black text-text-main truncate flex-1 tracking-tight">Novo Empréstimo</h3>
+          <button 
+            onClick={onClose} 
+            className="p-3 bg-bg-main hover:bg-border-main rounded-2xl transition-all text-text-muted hover:scale-110 active:scale-90 shrink-0"
+          >
+            <X size={22} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 overflow-y-auto">
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Cliente</label>
+        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6 overflow-y-auto">
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Cliente</label>
             <select 
               required
               value={formData.customerId}
               onChange={e => setFormData({...formData, customerId: e.target.value})}
-              className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
             >
               <option value="">Selecione um cliente</option>
               {customers.map(c => (
@@ -90,19 +100,20 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Valor (R$)</label>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Valor (R$)</label>
               <input 
                 type="number" 
                 required
                 min="1"
                 value={formData.amount || ''}
                 onChange={e => setFormData({...formData, amount: Number(e.target.value)})}
-                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-black text-text-main transition-all"
+                placeholder="0,00"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Juros (%)</label>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Juros (%)</label>
               <input 
                 type="number" 
                 required
@@ -110,19 +121,19 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
                 step="0.01"
                 value={formData.interestRate}
                 onChange={e => setFormData({...formData, interestRate: Number(e.target.value)})}
-                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-black text-text-main transition-all"
               />
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">Tipo de Juros</label>
-            <div className="flex p-1 bg-neutral-100 rounded-xl w-full">
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Tipo de Juros</label>
+            <div className="flex p-1.5 bg-bg-main border border-border-main rounded-2xl w-full gap-1">
               <button
                 type="button"
                 onClick={() => setFormData({...formData, interestType: 'simple'})}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                  formData.interestType === 'simple' ? 'bg-white text-emerald-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
+                className={`flex-1 py-2.5 rounded-[1.125rem] text-xs font-black uppercase tracking-wider transition-all ${
+                  formData.interestType === 'simple' ? 'bg-bg-card text-brand-700 shadow-sm' : 'text-text-muted hover:text-text-main'
                 }`}
               >
                 Fixo (Simples)
@@ -130,8 +141,8 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
               <button
                 type="button"
                 onClick={() => setFormData({...formData, interestType: 'compound'})}
-                className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${
-                  formData.interestType === 'compound' ? 'bg-white text-emerald-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
+                className={`flex-1 py-2.5 rounded-[1.125rem] text-xs font-black uppercase tracking-wider transition-all ${
+                  formData.interestType === 'compound' ? 'bg-bg-card text-brand-700 shadow-sm' : 'text-text-muted hover:text-text-main'
                 }`}
               >
                 Composto
@@ -140,23 +151,23 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Parcelas</label>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Parcelas</label>
               <input 
                 type="number" 
                 required
                 min="1"
                 value={formData.installmentsCount}
                 onChange={e => setFormData({...formData, installmentsCount: Number(e.target.value)})}
-                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-black text-text-main transition-all"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Frequência</label>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Frequência</label>
               <select 
                 value={formData.frequency}
                 onChange={e => setFormData({...formData, frequency: e.target.value as Frequency})}
-                className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
               >
                 <option value="daily">Diário</option>
                 <option value="weekly">Semanal</option>
@@ -165,23 +176,24 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">Data de Início</label>
+          <div className="space-y-2">
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Data de Início</label>
             <input 
               type="date" 
               required
               value={formData.startDate}
               onChange={e => setFormData({...formData, startDate: e.target.value})}
-              className="w-full p-3 bg-neutral-50 border border-neutral-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
             />
           </div>
 
-          <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100 mt-4">
+          <div className="p-6 bg-brand-50/50 rounded-[2rem] border border-brand-100 neo-shadow-sm mt-2">
             <div className="flex justify-between items-center">
-              <span className="text-emerald-700 font-medium">Total a Receber:</span>
-              <span className="text-xl font-bold text-emerald-800">{formatCurrency(totalToPay)}</span>
+              <span className="text-brand-700 font-bold text-sm uppercase tracking-widest">Total a Receber:</span>
+              <span className="text-2xl font-display font-black text-brand-800">{formatCurrency(totalToPay)}</span>
             </div>
-            <p className="text-[10px] text-emerald-600 mt-1 uppercase font-bold tracking-wider">
+            <div className="h-px bg-brand-100 my-3" />
+            <p className="text-[10px] text-brand-600 uppercase font-black tracking-[0.2em]">
               {formData.installmentsCount}x de {formatCurrency(totalToPay / formData.installmentsCount)}
             </p>
           </div>
@@ -189,7 +201,7 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
           <div className="pt-2">
             <button 
               type="submit"
-              className="w-full py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200"
+              className="w-full py-5 bg-brand-600 text-white font-black rounded-[2rem] hover:bg-brand-700 transition-all shadow-xl shadow-brand-100 active:scale-[0.98] text-lg tracking-tight"
             >
               Criar Empréstimo
             </button>

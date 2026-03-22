@@ -8,6 +8,7 @@ import { useStorage } from './hooks/useStorage';
 import { Loan, View, Customer } from './types';
 import { auth, signInWithGoogle, logout, onAuthStateChanged } from './firebase';
 import { User } from 'firebase/auth';
+import { motion } from 'motion/react';
 
 // Layout Components
 import { MainLayout } from './components/Layout/MainLayout';
@@ -30,19 +31,43 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 
 function LoginScreen() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-neutral-50 p-4">
-      <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full text-center border border-neutral-100">
-        <img src="/logo.png" alt="CredGestor" className="h-20 mx-auto mb-8" referrerPolicy="no-referrer" />
-        <h2 className="text-2xl font-bold text-neutral-800 mb-2">Bem-vindo ao CredGestor</h2>
-        <p className="text-neutral-500 mb-8">Gerencie seus empréstimos de forma profissional e segura.</p>
+    <div className="min-h-screen flex items-center justify-center bg-bg-main p-4 relative overflow-hidden transition-colors duration-300">
+      {/* Background blobs for modern look */}
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-brand-200/30 rounded-full blur-[120px] animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-brand-200/20 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="glass p-10 rounded-[2.5rem] neo-shadow-lg max-w-md w-full text-center relative z-10"
+      >
+        <div className="relative inline-block mb-10">
+          <div className="absolute -inset-4 bg-brand-500/20 rounded-full blur-xl animate-pulse"></div>
+          <img src="/logo.png" alt="CredGestor" className="h-24 mx-auto relative dark:brightness-110" referrerPolicy="no-referrer" />
+        </div>
+        
+        <h2 className="text-3xl font-display font-extrabold text-text-main mb-3 tracking-tight">
+          Bem-vindo ao <span className="text-brand-600">CredGestor</span>
+        </h2>
+        <p className="text-text-muted mb-10 font-medium leading-relaxed">
+          Gerencie seus empréstimos com a plataforma mais moderna e segura do mercado.
+        </p>
+        
         <button 
           onClick={signInWithGoogle}
-          className="w-full flex items-center justify-center gap-3 bg-white border border-neutral-200 py-3 px-4 rounded-2xl hover:bg-neutral-50 transition-all font-medium text-neutral-700 shadow-sm"
+          className="group w-full flex items-center justify-center gap-4 bg-bg-card border border-border-main py-4 px-6 rounded-2xl hover:border-brand-500 hover:bg-brand-50/50 transition-all duration-300 font-bold text-text-main shadow-sm hover:shadow-brand-100"
         >
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5" />
-          Entrar com Google
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6 group-hover:scale-110 transition-transform" />
+          <span className="text-[15px]">Entrar com Google</span>
         </button>
-      </div>
+        
+        <div className="mt-10 pt-8 border-t border-border-main">
+          <p className="text-xs text-text-muted font-semibold uppercase tracking-widest">
+            Tecnologia de Ponta para sua Gestão
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 }
@@ -83,6 +108,18 @@ function AppContent() {
     saveSettings
   } = useStorage();
 
+  useEffect(() => {
+    if (settings.darkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    
+    if (settings.accentColor) {
+      document.documentElement.style.setProperty('--accent-color', settings.accentColor);
+    }
+  }, [settings.darkMode, settings.accentColor]);
+
   const handleOpenPayment = (loan: Loan) => {
     setSelectedLoan(loan);
     setIsPaymentModalOpen(true);
@@ -90,12 +127,12 @@ function AppContent() {
 
   if (authLoading || (user && dataLoading)) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-neutral-50">
+      <div className="min-h-screen flex items-center justify-center bg-bg-main transition-colors duration-300">
         <div className="flex flex-col items-center gap-6">
-          <img src="/logo.png" alt="CredGestor" className="h-24 w-auto object-contain animate-pulse" referrerPolicy="no-referrer" />
+          <img src="/logo.png" alt="CredGestor" className="h-24 w-auto object-contain animate-pulse dark:brightness-110" referrerPolicy="no-referrer" />
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-neutral-500 font-bold uppercase tracking-widest text-sm">CredGestor</p>
+            <div className="w-10 h-10 border-4 border-brand-600 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-text-muted font-bold uppercase tracking-widest text-sm">CredGestor</p>
           </div>
         </div>
       </div>
@@ -196,29 +233,58 @@ function AppContent() {
         customers={customers}
         settings={settings}
         onSave={async (paymentData, sendWhatsApp) => {
-          await addPayment(paymentData);
-          
-          if (sendWhatsApp && selectedLoan) {
-            const customer = customers.find(c => c.id === selectedLoan.customerId);
-            if (customer?.phone) {
-              const phone = formatPhoneForWhatsApp(customer.phone);
-              const message = encodeURIComponent(
-                `*Comprovante de Pagamento - ${settings.companyName}*\n\n` +
-                `Olá, *${customer.name}*!\n` +
-                `Recebemos seu pagamento no valor de *${formatCurrency(paymentData.amount)}*.\n\n` +
-                `*Detalhes:*\n` +
-                `Data: ${new Date().toLocaleDateString('pt-BR')}\n` +
-                `Saldo Restante: ${formatCurrency(selectedLoan.remainingAmount - paymentData.amount)}\n\n` +
-                `Obrigado!`
-              );
-              const whatsappWindow = window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-              if (!whatsappWindow) {
-                alert('O WhatsApp foi bloqueado pelo navegador. Por favor, permita pop-ups para este site.');
+          try {
+            console.log('onSave paymentData:', paymentData, 'sendWhatsApp:', sendWhatsApp);
+            
+            // 1. Prepare WhatsApp URL if needed
+            let whatsappUrl = '';
+            if (sendWhatsApp && selectedLoan) {
+              const customer = customers.find(c => c.id === selectedLoan.customerId);
+              if (customer?.phone) {
+                const phone = formatPhoneForWhatsApp(customer.phone);
+                const message = encodeURIComponent(
+                  `*Comprovante de Pagamento - ${settings.companyName}*\n\n` +
+                  `Olá, *${customer.name}*!\n` +
+                  `Recebemos seu pagamento no valor de *${formatCurrency(paymentData.amount)}*.\n\n` +
+                  `*Detalhes:*\n` +
+                  `Data: ${new Date(paymentData.date).toLocaleDateString('pt-BR')}\n` +
+                  `Saldo Restante: ${formatCurrency(Math.max(0, selectedLoan.remainingAmount - paymentData.amount))}\n\n` +
+                  `Obrigado!`
+                );
+                whatsappUrl = `https://wa.me/${phone}?text=${message}`;
+                console.log('Prepared WhatsApp URL:', whatsappUrl);
               }
             }
+
+            // 2. Open WhatsApp window IMMEDIATELY if needed (before any await)
+            // This ensures the browser treats it as a direct user action
+            let whatsappWindow: Window | null = null;
+            if (whatsappUrl) {
+              console.log('Opening WhatsApp window...');
+              whatsappWindow = window.open(whatsappUrl, '_blank');
+              if (!whatsappWindow) {
+                console.warn('WhatsApp popup blocked');
+                alert('O WhatsApp foi bloqueado pelo navegador. Por favor, permita pop-ups para este site para enviar o comprovante automaticamente.');
+              }
+            }
+
+            // 3. Save the payment
+            console.log('Calling addPayment...');
+            const result = await addPayment(paymentData);
+            console.log('addPayment result:', result);
+            
+            if (result) {
+              // 4. Close the modal only on success
+              console.log('Closing payment modal');
+              setIsPaymentModalOpen(false);
+              setSelectedLoan(null);
+            } else {
+              console.warn('addPayment returned null, modal not closing');
+            }
+          } catch (error) {
+            console.error('Error in onSave payment in App.tsx:', error);
+            throw error; // Re-throw to be caught by PaymentModal
           }
-          
-          setIsPaymentModalOpen(false);
         }}
       />
     </>
