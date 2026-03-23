@@ -9,26 +9,30 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ title, onNewLoan, onToggleSidebar }) => {
   return (
-    <header className="glass border-b border-border-main p-4 md:p-6 flex justify-between items-center sticky top-0 z-30 transition-colors duration-300">
+    <header className="glass border-b border-slate-200 p-4 md:p-5 flex justify-between items-center sticky top-0 z-30 transition-all duration-500">
       <div className="flex items-center gap-4">
         <button 
           onClick={onToggleSidebar}
-          className="md:hidden p-2.5 bg-bg-main hover:bg-border-main rounded-xl transition-all text-text-muted border border-border-main"
+          className="p-2.5 btn-gradient-slate text-white rounded-xl transition-all active:scale-90"
         >
-          <Menu size={20} />
+          <Menu size={18} />
         </button>
-        <h2 className="text-xl md:text-2xl font-display font-extrabold text-text-main capitalize truncate max-w-[180px] md:max-w-none tracking-tight">
-          {title}
-        </h2>
+        <div className="flex flex-col">
+          <h2 className="text-xl md:text-2xl font-display font-black text-slate-900 capitalize truncate max-w-[200px] md:max-w-none tracking-tighter">
+            {title}
+          </h2>
+          <div className="h-0.5 w-8 bg-emerald-500 rounded-full mt-0.5 hidden md:block"></div>
+        </div>
       </div>
       <div className="flex items-center gap-3">
         <button 
           onClick={onNewLoan}
-          className="bg-brand-600 text-white px-4 py-2.5 md:px-6 md:py-3 rounded-2xl flex items-center gap-2.5 hover:bg-brand-700 transition-all duration-300 shadow-lg shadow-brand-200 font-bold text-sm md:text-[15px] group active:scale-95"
+          className="relative group overflow-hidden btn-gradient text-white px-5 py-3 md:px-6 md:py-3 rounded-xl flex items-center gap-2.5 transition-all duration-500 font-black text-xs md:text-[11px] active:scale-95 uppercase tracking-[0.2em]"
         >
-          <Plus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
-          <span className="hidden sm:inline">Novo Empréstimo</span>
-          <span className="sm:hidden">Novo</span>
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></div>
+          <Plus size={18} className="group-hover:rotate-180 transition-transform duration-700 relative z-10" />
+          <span className="hidden sm:inline relative z-10">Novo Empréstimo</span>
+          <span className="sm:hidden relative z-10">Novo</span>
         </button>
       </div>
     </header>

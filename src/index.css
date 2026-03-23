@@ -44,24 +44,36 @@
 }
 
 .dark {
-  --bg-main: #020617;
-  --bg-card: #0f172a;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-main: #1e293b;
+  --bg-main: #f1f5f9;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border-main: #cbd5e1;
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border border-white/20 dark:border-white/10;
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(0,0,0,0.1)];
   }
   
-  .glass-dark {
-    @apply bg-black/5 dark:bg-white/5 backdrop-blur-md border border-black/5 dark:border-white/5;
+  .glass-plus {
+    @apply bg-white/80 backdrop-blur-2xl border border-white/30 shadow-[0_20px_50px_rgba(0,0,0,0.15)] ring-1 ring-white/20;
+  }
+
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl;
   }
   
   .neo-shadow {
-    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 4px 10px -2px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+  }
+
+  .accent-glow {
+    box-shadow: 0 0 30px -5px var(--accent-color);
   }
 
   .neo-shadow-sm {
@@ -70,6 +82,46 @@
   
   .neo-shadow-lg {
     box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.08), 0 8px 20px -6px rgba(0, 0, 0, 0.03);
+  }
+
+  @keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
+
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 15s ease infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .btn-gradient {
+    @apply bg-gradient-to-br from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 transition-all duration-500 shadow-lg shadow-brand-500/20;
+  }
+
+  .btn-gradient-slate {
+    @apply bg-gradient-to-br from-slate-800 to-slate-700 hover:from-slate-700 hover:to-slate-600 transition-all duration-500 shadow-lg shadow-slate-500/20;
+  }
+
+  .btn-gradient-red {
+    @apply bg-gradient-to-br from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 transition-all duration-500 shadow-lg shadow-red-500/20;
   }
 }
 

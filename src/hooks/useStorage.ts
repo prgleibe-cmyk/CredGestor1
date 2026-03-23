@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Customer, Loan, Payment, Settings } from '../types';
+import { Customer, Loan, Payment, Settings, UserProfile, SystemConfig } from '../types';
 import { supabase } from '../supabase';
+
+const ADMIN_EMAIL = 'identificapix@gmail.com';
 
 export function useStorage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -14,26 +16,96 @@ export function useStorage() {
   });
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [allUsers, setAllUsers] = useState<UserProfile[]>([]);
+  const [systemConfig, setSystemConfig] = useState<SystemConfig>({
+    defaultMonthlyFee: 50,
+    defaultTrialDays: 7,
+    maintenanceMode: false
+  });
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      setIsAdmin(currentUser?.email === ADMIN_EMAIL);
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      setIsAdmin(currentUser?.email === ADMIN_EMAIL);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   useEffect(() => {
+    if (!user) return;
+
+    // Upsert profile for the current user
+    const upsertProfile = async () => {
+      try {
+        // First check if profile exists
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (!existingProfile) {
+          // Fetch system config for default trial days
+          const { data: configData } = await supabase
+            .from('system_config')
+            .select('default_trial_days, default_monthly_fee')
+            .single();
+
+          const trialDays = configData?.default_trial_days || 7;
+          const monthlyFee = configData?.default_monthly_fee || 50;
+          const trialEndsAt = new Date();
+          trialEndsAt.setDate(trialEndsAt.getDate() + trialDays);
+
+          const { error } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              email: user.email,
+              full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+              role: user.email === ADMIN_EMAIL ? 'admin' : 'user',
+              subscription_status: 'active',
+              monthly_fee: monthlyFee,
+              trial_ends_at: trialEndsAt.toISOString(),
+              updated_at: new Date().toISOString()
+            });
+          if (error) console.error('Error creating profile:', error);
+        } else {
+          // Update existing profile basic info
+          const { error } = await supabase
+            .from('profiles')
+            .update({
+              email: user.email,
+              full_name: user.user_metadata?.full_name || user.email.split('@')[0],
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', user.id);
+          if (error) console.error('Error updating profile:', error);
+        }
+      } catch (err) {
+        console.error('Error in upsertProfile:', err);
+      }
+    };
+
+    upsertProfile();
+  }, [user]);
+
+  useEffect(() => {
     if (!user) {
       setCustomers([]);
       setLoans([]);
       setPayments([]);
+      setAllUsers([]);
       setLoading(false);
       return;
     }
@@ -68,7 +140,7 @@ export function useStorage() {
         setLoans((loansData || []).map(l => ({
           id: l.id,
           customerId: l.customer_id,
-          customerName: l.customer_name || '', // Assuming we might add this or join
+          customerName: l.customer_name || '',
           amount: Number(l.amount),
           interestRate: Number(l.interest_rate),
           interestType: l.interest_type as any,
@@ -118,6 +190,40 @@ export function useStorage() {
             accentColor: settingsData.accent_color || '#16a34a'
           });
         }
+
+        // Admin specific data
+        if (user.email === ADMIN_EMAIL) {
+          const { data: profilesData, error: profilesError } = await supabase
+            .from('profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+          
+          if (!profilesError) {
+            setAllUsers((profilesData || []).map(p => ({
+              id: p.id,
+              email: p.email,
+              fullName: p.full_name,
+              role: p.role,
+              subscriptionStatus: p.subscription_status,
+              monthlyFee: Number(p.monthly_fee || 0),
+              trialEndsAt: p.trial_ends_at,
+              createdAt: p.created_at
+            })));
+          }
+
+          const { data: configData, error: configError } = await supabase
+            .from('system_config')
+            .select('*')
+            .single();
+          
+          if (!configError && configData) {
+            setSystemConfig({
+              defaultMonthlyFee: Number(configData.default_monthly_fee || 50),
+              defaultTrialDays: Number(configData.default_trial_days || 7),
+              maintenanceMode: configData.maintenance_mode || false
+            });
+          }
+        }
       } catch (error) {
         console.error('Error fetching data from Supabase:', error);
       } finally {
@@ -148,13 +254,58 @@ export function useStorage() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, fetchData)
       .subscribe();
 
+    const profilesSubscription = user.email === ADMIN_EMAIL ? supabase
+      .channel('public:profiles')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchData)
+      .subscribe() : null;
+
     return () => {
       customersSubscription.unsubscribe();
       loansSubscription.unsubscribe();
       paymentsSubscription.unsubscribe();
       settingsSubscription.unsubscribe();
+      profilesSubscription?.unsubscribe();
     };
   }, [user]);
+
+  const updateProfile = async (id: string, profileData: Partial<UserProfile>) => {
+    if (!isAdmin) return false;
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          subscription_status: profileData.subscriptionStatus,
+          monthly_fee: profileData.monthlyFee,
+          role: profileData.role
+        })
+        .eq('id', id);
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      return false;
+    }
+  };
+
+  const updateSystemConfig = async (config: Partial<SystemConfig>) => {
+    if (!isAdmin) return false;
+    try {
+      const { error } = await supabase
+        .from('system_config')
+        .upsert({
+          id: 1, // Single config record
+          default_monthly_fee: config.defaultMonthlyFee,
+          default_trial_days: config.defaultTrialDays,
+          maintenance_mode: config.maintenanceMode,
+          updated_at: new Date().toISOString()
+        });
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error updating system config:', error);
+      return false;
+    }
+  };
 
   const addCustomer = async (customer: Omit<Customer, 'id' | 'createdAt' | 'createdBy'>) => {
     if (!user) return null;
@@ -392,6 +543,11 @@ export function useStorage() {
     deleteLoan,
     addPayment,
     clearAllData,
-    saveSettings
+    saveSettings,
+    isAdmin,
+    allUsers,
+    systemConfig,
+    updateProfile,
+    updateSystemConfig
   };
 }

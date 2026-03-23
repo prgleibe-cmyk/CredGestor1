@@ -42,20 +42,21 @@ export function HistoryView({ payments, loans }: HistoryViewProps) {
   }, [filteredPayments]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-10 pb-12">
       {/* Summary Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass p-6 rounded-[2.5rem] neo-shadow flex items-center gap-5 border border-white/40"
+          className="glass-card p-8 rounded-[3rem] border border-slate-200 shadow-2xl flex items-center gap-6 group hover:border-emerald-500/30 transition-all duration-700 relative overflow-hidden"
         >
-          <div className="p-4 bg-brand-500 rounded-2xl text-white shadow-lg shadow-brand-200">
-            <TrendingUp size={24} />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-3xl transition-all duration-700 group-hover:bg-emerald-500/10"></div>
+          <div className="p-5 bg-emerald-600 rounded-[1.5rem] text-white shadow-2xl shadow-emerald-500/30 group-hover:scale-110 transition-transform duration-500 relative z-10">
+            <TrendingUp size={28} strokeWidth={2.5} />
           </div>
-          <div>
-            <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-1">Total no Período</p>
-            <h3 className="text-3xl font-display font-black text-slate-900 leading-none tracking-tight">{formatCurrency(totalInPeriod)}</h3>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Total no Período</p>
+            <h3 className="text-4xl font-display font-black text-slate-900 leading-none tracking-tighter accent-glow">{formatCurrency(totalInPeriod)}</h3>
           </div>
         </motion.div>
       </div>
@@ -65,24 +66,31 @@ export function HistoryView({ payments, loans }: HistoryViewProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="glass p-4 rounded-[2rem] neo-shadow flex flex-wrap items-center gap-4 border border-white/40"
+        className="glass-card p-5 rounded-[2.5rem] border border-slate-200 shadow-2xl flex flex-wrap items-center gap-6"
       >
-        <div className="flex items-center gap-3 text-slate-400 ml-2">
-          <Filter size={18} />
-          <span className="text-xs font-black uppercase tracking-widest">Filtrar por:</span>
+        <div className="flex items-center gap-4 text-slate-500 ml-4">
+          <Filter size={20} className="text-emerald-500/50" />
+          <span className="text-[11px] font-black uppercase tracking-[0.2em]">Filtrar por:</span>
         </div>
-        <div className="flex p-1.5 bg-slate-100/50 rounded-2xl backdrop-blur-sm border border-slate-200/50">
+        <div className="flex p-2 bg-slate-900/5 rounded-[1.5rem] border border-slate-200 shadow-inner">
           {(['today', 'week', 'month', 'all'] as Period[]).map((p) => (
             <button
               key={p}
               onClick={() => setPeriod(p)}
-              className={`px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all active:scale-95 ${
+              className={`px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 active:scale-95 relative overflow-hidden group ${
                 period === p 
-                  ? 'bg-white text-brand-600 shadow-md shadow-brand-100/50 ring-1 ring-slate-200/50' 
-                  : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+                  ? 'text-white shadow-2xl shadow-emerald-500/20' 
+                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-900/5'
               }`}
             >
-              {p === 'today' ? 'Hoje' : p === 'week' ? 'Semana' : p === 'month' ? 'Mês' : 'Tudo'}
+              {period === p && (
+                <motion.div 
+                  layoutId="activePeriod"
+                  className="absolute inset-0 btn-gradient rounded-2xl -z-10"
+                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+              <span className="relative z-10">{p === 'today' ? 'Hoje' : p === 'week' ? 'Semana' : p === 'month' ? 'Mês' : 'Tudo'}</span>
             </button>
           ))}
         </div>
@@ -93,47 +101,52 @@ export function HistoryView({ payments, loans }: HistoryViewProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="glass rounded-[2.5rem] neo-shadow overflow-hidden border border-white/40"
+        className="glass-card rounded-[3rem] border border-slate-200 shadow-2xl overflow-hidden"
       >
-        <div className="p-6 md:p-8 border-b border-slate-100/50 flex items-center justify-between bg-white/30">
-          <h3 className="text-xl font-display font-black flex items-center gap-3 text-slate-900 tracking-tight">
-            <Calendar size={22} className="text-brand-500" />
+        <div className="p-8 md:p-10 border-b border-slate-200 flex items-center justify-between bg-slate-900/5">
+          <h3 className="text-2xl font-display font-black flex items-center gap-4 text-slate-900 tracking-tight">
+            <div className="p-2.5 bg-emerald-500/10 rounded-xl">
+              <Calendar size={24} className="text-emerald-600" />
+            </div>
             Histórico de Pagamentos
           </h3>
-          <span className="px-4 py-1.5 bg-slate-100 rounded-full text-[10px] font-black text-slate-400 uppercase tracking-widest">
+          <span className="px-5 py-2 bg-slate-900/5 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] border border-slate-200 shadow-inner">
             {filteredPayments.length} registros
           </span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50/50 text-slate-400 text-[11px] font-black uppercase tracking-widest border-b border-slate-100/50">
-                <th className="px-8 py-5">Data</th>
-                <th className="px-8 py-5">Cliente</th>
-                <th className="px-8 py-5">Valor</th>
-                <th className="px-8 py-5">Notas</th>
+              <tr className="bg-slate-900/5 text-slate-600 text-[11px] font-black uppercase tracking-[0.3em] border-b border-slate-200">
+                <th className="px-10 py-6">Data</th>
+                <th className="px-10 py-6">Cliente</th>
+                <th className="px-10 py-6">Valor</th>
+                <th className="px-10 py-6">Notas</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100/50">
+            <tbody className="divide-y divide-slate-200">
               {filteredPayments.map(payment => {
                 const loan = loans.find(l => l.id === payment.loanId);
                 return (
-                  <tr key={payment.id} className="group hover:bg-brand-50/30 transition-all">
-                    <td className="px-8 py-5 text-xs font-bold text-slate-400">
-                      {formatDateTime(payment.date)}
+                  <tr key={payment.id} className="group hover:bg-slate-900/5 transition-all duration-500">
+                    <td className="px-10 py-7">
+                      <div className="flex flex-col">
+                        <span className="text-xs font-black text-slate-500 tracking-tight">{formatDateTime(payment.date).split(' ')[0]}</span>
+                        <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mt-1">{formatDateTime(payment.date).split(' ')[1]}</span>
+                      </div>
                     </td>
-                    <td className="px-8 py-5">
-                      <span className="font-display font-black text-slate-800 text-base tracking-tight group-hover:text-brand-600 transition-colors">
+                    <td className="px-10 py-7">
+                      <span className="font-display font-black text-slate-900 text-lg tracking-tight group-hover:text-emerald-600 transition-colors duration-500">
                         {loan?.customerName || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-8 py-5">
-                      <span className="font-display font-black text-brand-600 text-lg tracking-tight">
+                    <td className="px-10 py-7">
+                      <span className="font-display font-black text-emerald-600 text-xl tracking-tighter group-hover:scale-110 inline-block transition-transform duration-500">
                         {formatCurrency(payment.amount)}
                       </span>
                     </td>
-                    <td className="px-8 py-5">
-                      <p className="text-xs font-bold text-slate-500 max-w-[250px] truncate italic bg-slate-50/50 px-3 py-1.5 rounded-lg border border-slate-100/50">
+                    <td className="px-10 py-7">
+                      <p className="text-xs font-bold text-slate-500 max-w-[300px] truncate italic bg-slate-900/5 px-4 py-2.5 rounded-xl border border-slate-200 group-hover:border-slate-300 transition-colors duration-500">
                         {payment.notes || '-'}
                       </p>
                     </td>
@@ -142,10 +155,12 @@ export function HistoryView({ payments, loans }: HistoryViewProps) {
               })}
               {filteredPayments.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-8 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3 opacity-30">
-                      <Calendar size={48} className="text-slate-400" />
-                      <p className="text-sm font-black uppercase tracking-widest text-slate-500">Nenhum pagamento encontrado</p>
+                  <td colSpan={4} className="px-10 py-24 text-center">
+                    <div className="flex flex-col items-center gap-6 opacity-30 group">
+                      <div className="p-6 bg-slate-900/5 rounded-[2rem] shadow-inner group-hover:scale-110 transition-transform duration-700">
+                        <Calendar size={56} className="text-slate-500" strokeWidth={1.5} />
+                      </div>
+                      <p className="text-sm font-black uppercase tracking-[0.3em] text-slate-600">Nenhum pagamento encontrado</p>
                     </div>
                   </td>
                 </tr>

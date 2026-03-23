@@ -61,59 +61,68 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 backdrop-blur-md overflow-hidden"
+      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 bg-slate-900/40 backdrop-blur-xl overflow-hidden"
       onClick={onClose}
     >
       <motion.div 
-        initial={{ y: "100%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "100%", opacity: 0 }}
-        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        initial={{ y: "100%", opacity: 0, scale: 0.9 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: "100%", opacity: 0, scale: 0.9 }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-full max-w-lg rounded-t-[3rem] md:rounded-[3rem] shadow-2xl flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-slate-200/60 relative"
+        className="glass-card w-full max-w-2xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-slate-200 relative overflow-hidden"
       >
-        <div className="p-6 md:p-8 border-b border-border-main flex justify-between items-center gap-4 shrink-0 rounded-t-[3rem] md:rounded-t-[3rem] bg-bg-main/50">
-          <div className="md:hidden absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-border-main rounded-full" />
-          <h3 className="text-2xl font-display font-black text-text-main truncate flex-1 tracking-tight">Novo Empréstimo</h3>
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+        
+        <div className="p-8 md:p-10 border-b border-slate-200 flex justify-between items-center gap-6 shrink-0 rounded-t-[4rem] md:rounded-t-[4rem] bg-slate-900/5 relative z-10">
+          <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-slate-900/10 rounded-full shadow-inner" />
+          <h3 className="text-3xl font-display font-black text-slate-900 truncate flex-1 tracking-tighter">Novo Empréstimo</h3>
           <button 
             onClick={onClose} 
-            className="p-3 bg-bg-main hover:bg-border-main rounded-2xl transition-all text-text-muted hover:scale-110 active:scale-90 shrink-0"
+            className="p-4 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-slate-200 shadow-inner"
           >
-            <X size={22} />
+            <X size={24} strokeWidth={2.5} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6 overflow-y-auto">
-          <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Cliente</label>
-            <select 
-              required
-              value={formData.customerId}
-              onChange={e => setFormData({...formData, customerId: e.target.value})}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
-            >
-              <option value="">Selecione um cliente</option>
-              {customers.map(c => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
+        <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8 overflow-y-auto relative z-10 custom-scrollbar">
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Cliente</label>
+            <div className="relative">
+              <select 
+                required
+                value={formData.customerId}
+                onChange={e => setFormData({...formData, customerId: e.target.value})}
+                className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all appearance-none shadow-inner"
+              >
+                <option value="" className="bg-white">Selecione um cliente</option>
+                {customers.map(c => (
+                  <option key={c.id} value={c.id} className="bg-white">{c.name}</option>
+                ))}
+              </select>
+              <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Valor (R$)</label>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Valor (R$)</label>
               <input 
                 type="number" 
                 required
                 min="1"
                 value={formData.amount || ''}
                 onChange={e => setFormData({...formData, amount: Number(e.target.value)})}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-black text-text-main transition-all"
+                className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
                 placeholder="0,00"
               />
             </div>
-            <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Juros (%)</label>
+            <div className="space-y-3">
+              <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Juros (%)</label>
               <input 
                 type="number" 
                 required
@@ -121,89 +130,104 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
                 step="0.01"
                 value={formData.interestRate}
                 onChange={e => setFormData({...formData, interestRate: Number(e.target.value)})}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-black text-text-main transition-all"
+                className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all shadow-inner"
               />
             </div>
           </div>
 
-          <div className="space-y-3">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Tipo de Juros</label>
-            <div className="flex p-1.5 bg-bg-main border border-border-main rounded-2xl w-full gap-1">
+          <div className="space-y-4">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Tipo de Juros</label>
+            <div className="flex p-2 bg-slate-900/5 border border-slate-200 rounded-[2rem] w-full gap-2 shadow-inner">
               <button
                 type="button"
                 onClick={() => setFormData({...formData, interestType: 'simple'})}
-                className={`flex-1 py-2.5 rounded-[1.125rem] text-xs font-black uppercase tracking-wider transition-all ${
-                  formData.interestType === 'simple' ? 'bg-bg-card text-brand-700 shadow-sm' : 'text-text-muted hover:text-text-main'
+                className={`flex-1 py-3.5 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group/btn ${
+                  formData.interestType === 'simple' ? 'text-white shadow-2xl shadow-emerald-500/20' : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                Fixo (Simples)
+                {formData.interestType === 'simple' && (
+                  <motion.div layoutId="interestType" className="absolute inset-0 btn-gradient rounded-[1.5rem] -z-10" />
+                )}
+                <span className="relative z-10">Fixo (Simples)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setFormData({...formData, interestType: 'compound'})}
-                className={`flex-1 py-2.5 rounded-[1.125rem] text-xs font-black uppercase tracking-wider transition-all ${
-                  formData.interestType === 'compound' ? 'bg-bg-card text-brand-700 shadow-sm' : 'text-text-muted hover:text-text-main'
+                className={`flex-1 py-3.5 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group/btn ${
+                  formData.interestType === 'compound' ? 'text-white shadow-2xl shadow-emerald-500/20' : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
-                Composto
+                {formData.interestType === 'compound' && (
+                  <motion.div layoutId="interestType" className="absolute inset-0 btn-gradient rounded-[1.5rem] -z-10" />
+                )}
+                <span className="relative z-10">Composto</span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Parcelas</label>
+          <div className="grid grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Parcelas</label>
               <input 
                 type="number" 
                 required
                 min="1"
                 value={formData.installmentsCount}
                 onChange={e => setFormData({...formData, installmentsCount: Number(e.target.value)})}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-black text-text-main transition-all"
+                className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all shadow-inner"
               />
             </div>
-            <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Frequência</label>
-              <select 
-                value={formData.frequency}
-                onChange={e => setFormData({...formData, frequency: e.target.value as Frequency})}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
-              >
-                <option value="daily">Diário</option>
-                <option value="weekly">Semanal</option>
-                <option value="monthly">Mensal</option>
-              </select>
+            <div className="space-y-3">
+              <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Frequência</label>
+              <div className="relative">
+                <select 
+                  value={formData.frequency}
+                  onChange={e => setFormData({...formData, frequency: e.target.value as Frequency})}
+                  className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all appearance-none shadow-inner"
+                >
+                  <option value="daily" className="bg-white">Diário</option>
+                  <option value="weekly" className="bg-white">Semanal</option>
+                  <option value="monthly" className="bg-white">Mensal</option>
+                </select>
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Data de Início</label>
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Data de Início</label>
             <input 
               type="date" 
               required
               value={formData.startDate}
               onChange={e => setFormData({...formData, startDate: e.target.value})}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
+              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all shadow-inner"
             />
           </div>
 
-          <div className="p-6 bg-brand-50/50 rounded-[2rem] border border-brand-100 neo-shadow-sm mt-2">
-            <div className="flex justify-between items-center">
-              <span className="text-brand-700 font-bold text-sm uppercase tracking-widest">Total a Receber:</span>
-              <span className="text-2xl font-display font-black text-brand-800">{formatCurrency(totalToPay)}</span>
+          <div className="p-8 bg-emerald-500/10 rounded-[2.5rem] border border-emerald-500/20 mt-4 relative overflow-hidden group shadow-inner">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+            <div className="flex justify-between items-center relative z-10">
+              <span className="text-emerald-600 font-black text-[11px] uppercase tracking-[0.3em]">Total a Receber:</span>
+              <span className="text-3xl font-display font-black text-slate-900">{formatCurrency(totalToPay)}</span>
             </div>
-            <div className="h-px bg-brand-100 my-3" />
-            <p className="text-[10px] text-brand-600 uppercase font-black tracking-[0.2em]">
-              {formData.installmentsCount}x de {formatCurrency(totalToPay / formData.installmentsCount)}
+            <div className="h-px bg-slate-900/10 my-5 relative z-10" />
+            <p className="text-[11px] text-slate-500 uppercase font-black tracking-[0.3em] relative z-10">
+              {formData.installmentsCount}x de <span className="text-slate-900">{formatCurrency(totalToPay / formData.installmentsCount)}</span>
             </p>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-4">
             <button 
               type="submit"
-              className="w-full py-5 bg-brand-600 text-white font-black rounded-[2rem] hover:bg-brand-700 transition-all shadow-xl shadow-brand-100 active:scale-[0.98] text-lg tracking-tight"
+              className="relative overflow-hidden w-full py-6 btn-gradient text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-[1.5rem] active:scale-[0.98] group/btn"
             >
-              Criar Empréstimo
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></div>
+              <span className="relative z-10">Criar Empréstimo</span>
             </button>
           </div>
         </form>

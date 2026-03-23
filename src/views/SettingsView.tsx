@@ -138,17 +138,17 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
   };
 
   return (
-    <div className="w-full max-w-3xl glass p-8 md:p-10 rounded-[3rem] border border-white/40 neo-shadow">
+    <div className="w-full max-w-3xl bg-slate-900/5 backdrop-blur-xl p-8 md:p-10 rounded-[3rem] border border-slate-200 shadow-2xl">
       <div className="flex justify-between items-center mb-10">
         <h3 className="text-3xl font-display font-black text-slate-900 tracking-tight">Configurações</h3>
         {showSuccess && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-3 px-4 py-2 bg-brand-50 text-brand-600 rounded-2xl border border-brand-100 shadow-sm"
+            className="flex items-center gap-3 px-4 py-2 bg-emerald-500/10 text-emerald-600 rounded-2xl border border-emerald-500/20 shadow-sm"
           >
             <CheckCircle2 size={20} />
-            <span className="text-sm font-black uppercase tracking-widest">Salvo!</span>
+            <span className="text-[10px] font-black uppercase tracking-widest">Salvo!</span>
           </motion.div>
         )}
       </div>
@@ -156,30 +156,30 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
       <div className="space-y-10">
         <section className="space-y-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-brand-100 rounded-xl text-brand-600">
+            <div className="p-2 bg-slate-900/5 rounded-xl text-emerald-600 border border-slate-200">
               <Database size={18} />
             </div>
-            <h4 className="text-[11px] font-black text-text-muted uppercase tracking-[0.2em]">Geral do Sistema</h4>
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Geral do Sistema</h4>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Nome da Empresa / Pessoal</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Nome da Empresa / Pessoal</label>
               <input 
                 type="text" 
                 value={formData.companyName} 
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                className="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-bold text-slate-900 transition-all placeholder:text-slate-400" 
                 placeholder="Ex: CredGestor Soluções"
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">CPF ou CNPJ</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">CPF ou CNPJ</label>
               <input 
                 type="text" 
                 value={formData.document || ''} 
                 onChange={(e) => setFormData({ ...formData, document: e.target.value })}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                className="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-bold text-slate-900 transition-all placeholder:text-slate-400" 
                 placeholder="00.000.000/0001-00"
               />
             </div>
@@ -187,43 +187,43 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Telefone de Contato</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Telefone de Contato</label>
               <input 
                 type="text" 
                 value={formData.phone || ''} 
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                className="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-bold text-slate-900 transition-all placeholder:text-slate-400" 
                 placeholder="(00) 00000-0000"
               />
             </div>
             <div className="space-y-2">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Taxa de Juros Padrão (%)</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Taxa de Juros Padrão (%)</label>
               <input 
                 type="number" 
                 value={formData.defaultInterestRate} 
                 onChange={(e) => setFormData({ ...formData, defaultInterestRate: Number(e.target.value) })}
-                className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+                className="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-bold text-slate-900 transition-all" 
               />
             </div>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Endereço Completo</label>
+            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Endereço Completo</label>
             <input 
               type="text" 
               value={formData.address || ''} 
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all" 
+              className="w-full p-4 bg-white/60 border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-bold text-slate-900 transition-all placeholder:text-slate-400" 
               placeholder="Rua, Número, Bairro, Cidade - UF"
             />
           </div>
 
           <div className="space-y-3">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Logomarca da Empresa</label>
+            <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Logomarca da Empresa</label>
             <div className="flex items-center gap-6">
               {formData.logoUrl && (
                 <div className="relative group shrink-0">
-                  <div className="w-24 h-24 p-3 bg-white rounded-[2rem] border border-border-main neo-shadow-sm flex items-center justify-center overflow-hidden">
+                  <div className="w-24 h-24 p-3 bg-slate-900/5 rounded-[2rem] border border-slate-200 flex items-center justify-center overflow-hidden">
                     <img 
                       src={formData.logoUrl} 
                       alt="Logo Preview" 
@@ -240,16 +240,16 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
                 </div>
               )}
               <label className={`flex-1 flex flex-col items-center justify-center p-8 border-2 border-dashed rounded-[2rem] cursor-pointer transition-all active:scale-[0.98] ${
-                formData.logoUrl ? 'border-border-main hover:border-brand-500' : 'border-brand-200 bg-brand-50/30 hover:bg-brand-50'
+                formData.logoUrl ? 'border-slate-200 hover:border-emerald-500/50' : 'border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10'
               }`}>
                 <div className="flex flex-col items-center gap-2 text-center">
-                  <div className="p-3 bg-white rounded-2xl shadow-sm mb-1">
-                    <Download size={24} className="text-brand-600" />
+                  <div className="p-3 bg-slate-900/5 rounded-2xl shadow-sm mb-1 border border-slate-200">
+                    <Download size={24} className="text-emerald-600" />
                   </div>
-                  <span className="text-sm font-black uppercase tracking-tight text-text-main">
+                  <span className="text-sm font-black uppercase tracking-tight text-slate-900">
                     {formData.logoUrl ? 'Alterar Logomarca' : 'Carregar Logomarca'}
                   </span>
-                  <span className="text-[10px] text-text-muted font-bold uppercase tracking-widest">PNG ou JPG até 1MB</span>
+                  <span className="text-[9px] text-slate-500 font-black uppercase tracking-widest">PNG ou JPG até 1MB</span>
                 </div>
                 <input 
                   type="file" 
@@ -275,27 +275,27 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
           </div>
         </section>
 
-        <section className="pt-10 border-t border-border-main/50 space-y-6">
+        <section className="pt-10 border-t border-slate-200 space-y-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-indigo-100 rounded-xl text-indigo-600">
+            <div className="p-2 bg-slate-900/5 rounded-xl text-blue-600 border border-slate-200">
               <CheckCircle2 size={18} />
             </div>
-            <h4 className="text-[11px] font-black text-text-muted uppercase tracking-[0.2em]">Personalização Visual</h4>
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Personalização Visual</h4>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             <div className="space-y-4">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Modo de Exibição</label>
-              <div className="flex p-1 bg-bg-main border border-border-main rounded-2xl">
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Modo de Exibição</label>
+              <div className="flex p-1 bg-slate-900/5 border border-slate-200 rounded-2xl">
                 <button 
                   onClick={() => setFormData({ ...formData, darkMode: false })}
-                  className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${!formData.darkMode ? 'bg-white neo-shadow text-brand-600' : 'text-text-muted hover:text-text-main'}`}
+                  className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${!formData.darkMode ? 'bg-white text-slate-900 shadow-xl' : 'text-slate-500 hover:text-slate-900'}`}
                 >
                   Claro
                 </button>
                 <button 
                   onClick={() => setFormData({ ...formData, darkMode: true })}
-                  className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${formData.darkMode ? 'bg-slate-800 neo-shadow text-white' : 'text-text-muted hover:text-text-main'}`}
+                  className={`flex-1 py-3 px-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.darkMode ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-500/20' : 'text-slate-500 hover:text-slate-900'}`}
                 >
                   Escuro
                 </button>
@@ -303,20 +303,20 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
             </div>
 
             <div className="space-y-4">
-              <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Cor de Destaque</label>
+              <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Cor de Destaque</label>
               <div className="flex flex-wrap gap-3">
                 {[
-                  { name: 'Esmeralda', color: '#16a34a' },
-                  { name: 'Azul', color: '#2563eb' },
-                  { name: 'Violeta', color: '#7c3aed' },
-                  { name: 'Rosa', color: '#db2777' },
-                  { name: 'Laranja', color: '#ea580c' },
-                  { name: 'Slate', color: '#475569' },
+                  { name: 'Esmeralda', color: '#10b981' },
+                  { name: 'Azul', color: '#3b82f6' },
+                  { name: 'Violeta', color: '#8b5cf6' },
+                  { name: 'Rosa', color: '#ec4899' },
+                  { name: 'Laranja', color: '#f97316' },
+                  { name: 'Slate', color: '#64748b' },
                 ].map((c) => (
                   <button
                     key={c.color}
                     onClick={() => setFormData({ ...formData, accentColor: c.color })}
-                    className={`w-10 h-10 rounded-full border-4 transition-all hover:scale-110 active:scale-90 ${formData.accentColor === c.color ? 'border-white ring-2 ring-brand-500 shadow-lg' : 'border-transparent'}`}
+                    className={`w-10 h-10 rounded-full border-4 transition-all hover:scale-110 active:scale-90 ${formData.accentColor === c.color ? 'border-white ring-2 ring-emerald-500 shadow-lg' : 'border-transparent'}`}
                     style={{ backgroundColor: c.color }}
                     title={c.name}
                   />
@@ -324,12 +324,12 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
                 <div className="relative">
                   <input 
                     type="color" 
-                    value={formData.accentColor || '#16a34a'}
+                    value={formData.accentColor || '#10b981'}
                     onChange={(e) => setFormData({ ...formData, accentColor: e.target.value })}
                     className="w-10 h-10 rounded-full border-none p-0 cursor-pointer overflow-hidden opacity-0 absolute inset-0"
                   />
                   <div 
-                    className="w-10 h-10 rounded-full border-2 border-border-main flex items-center justify-center bg-white text-text-muted text-[10px] font-black"
+                    className="w-10 h-10 rounded-full border-2 border-slate-200 flex items-center justify-center bg-slate-900/5 text-slate-500 text-[10px] font-black"
                     style={{ borderStyle: 'dashed' }}
                   >
                     +
@@ -344,7 +344,7 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
           <button 
             onClick={handleSave}
             disabled={isSaving}
-            className="w-full md:w-auto px-10 py-5 bg-brand-600 text-white font-black rounded-[2rem] hover:bg-brand-700 transition-all shadow-xl shadow-brand-100 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg tracking-tight active:scale-95"
+            className="w-full md:w-auto px-10 py-5 btn-gradient text-white font-black rounded-[2rem] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg tracking-tight active:scale-95"
           >
             {isSaving ? (
               <>
@@ -357,68 +357,68 @@ export function SettingsView({ onClearData, customers, loans, payments, settings
           </button>
         </div>
 
-        <section className="pt-10 border-t border-slate-100/50 space-y-6">
+        <section className="pt-10 border-t border-slate-200 space-y-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-slate-100 rounded-xl text-slate-600">
+            <div className="p-2 bg-slate-900/5 rounded-xl text-slate-400 border border-slate-200">
               <Download size={18} />
             </div>
-            <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Exportação & Backup</h4>
+            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Exportação & Backup</h4>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <button 
               onClick={handleExportExcel}
-              className="group flex flex-col items-center gap-4 p-6 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] hover:bg-white hover:neo-shadow transition-all active:scale-95"
+              className="group flex flex-col items-center gap-4 p-6 btn-gradient-slate text-white rounded-[2.5rem] transition-all active:scale-95"
             >
-              <div className="p-4 bg-white rounded-2xl border border-slate-100 group-hover:bg-emerald-50 group-hover:border-emerald-100 transition-colors">
+              <div className="p-4 bg-slate-900/5 rounded-2xl border border-slate-200 group-hover:bg-emerald-500/10 group-hover:border-emerald-500/20 transition-colors">
                 <FileSpreadsheet size={28} className="text-emerald-600" />
               </div>
-              <span className="text-xs font-black uppercase tracking-widest text-slate-600">Excel (CSV)</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Excel (CSV)</span>
             </button>
 
             <button 
               onClick={handleExportPdf}
-              className="group flex flex-col items-center gap-4 p-6 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] hover:bg-white hover:neo-shadow transition-all active:scale-95"
+              className="group flex flex-col items-center gap-4 p-6 btn-gradient-slate text-white rounded-[2.5rem] transition-all active:scale-95"
             >
-              <div className="p-4 bg-white rounded-2xl border border-slate-100 group-hover:bg-red-50 group-hover:border-red-100 transition-colors">
+              <div className="p-4 bg-slate-900/5 rounded-2xl border border-slate-200 group-hover:bg-red-500/10 group-hover:border-red-500/20 transition-colors">
                 <FilePdf size={28} className="text-red-600" />
               </div>
-              <span className="text-xs font-black uppercase tracking-widest text-slate-600">PDF Geral</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">PDF Geral</span>
             </button>
 
             <button 
               onClick={handleExport}
-              className="group flex flex-col items-center gap-4 p-6 bg-slate-50/50 border border-slate-200 rounded-[2.5rem] hover:bg-white hover:neo-shadow transition-all active:scale-95"
+              className="group flex flex-col items-center gap-4 p-6 btn-gradient-slate text-white rounded-[2.5rem] transition-all active:scale-95"
             >
-              <div className="p-4 bg-white rounded-2xl border border-slate-100 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+              <div className="p-4 bg-slate-900/5 rounded-2xl border border-slate-200 group-hover:bg-blue-500/10 group-hover:border-blue-500/20 transition-colors">
                 <Database size={28} className="text-blue-600" />
               </div>
-              <span className="text-xs font-black uppercase tracking-widest text-slate-600">Backup (JSON)</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Backup (JSON)</span>
             </button>
           </div>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest text-center leading-relaxed max-w-md mx-auto">
+          <p className="text-[9px] text-slate-600 font-black uppercase tracking-widest text-center leading-relaxed max-w-md mx-auto">
             O arquivo JSON é o único que pode ser usado para restaurar dados no futuro. Excel e PDF são para conferência humana.
           </p>
         </section>
 
-        <section className="pt-10 border-t border-slate-100/50">
+        <section className="pt-10 border-t border-slate-200">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-red-50 rounded-xl text-red-600">
+            <div className="p-2 bg-red-500/10 rounded-xl text-red-600 border border-red-500/20">
               <Trash2 size={18} />
             </div>
-            <h4 className="text-[11px] font-black text-red-400 uppercase tracking-[0.2em]">Zona de Perigo</h4>
+            <h4 className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em]">Zona de Perigo</h4>
           </div>
           
           <button 
             onClick={() => setIsConfirmOpen(true)}
-            className="flex items-center gap-6 p-6 bg-red-50/30 hover:bg-red-50 rounded-[2.5rem] transition-all w-full border border-red-100/50 hover:border-red-200 group active:scale-[0.99]"
+            className="flex items-center gap-6 p-6 btn-gradient-red text-white rounded-[2.5rem] transition-all w-full group active:scale-[0.99]"
           >
-            <div className="p-4 bg-white rounded-2xl border border-red-100 shadow-sm group-hover:scale-110 transition-transform">
+            <div className="p-4 bg-slate-900/5 rounded-2xl border border-slate-200 shadow-sm group-hover:scale-110 transition-transform">
               <Trash2 size={24} className="text-red-600" />
             </div>
             <div className="flex flex-col items-start">
-              <span className="text-lg font-black text-red-900 tracking-tight">Limpar Todos os Dados</span>
-              <span className="text-xs text-red-500 font-bold uppercase tracking-widest">Esta ação não pode ser desfeita</span>
+              <span className="text-lg font-black text-slate-900 tracking-tight">Limpar Todos os Dados</span>
+              <span className="text-[10px] text-red-600 font-black uppercase tracking-widest">Esta ação não pode ser desfeita</span>
             </div>
           </button>
         </section>

@@ -27,58 +27,57 @@ export function ConfirmModal({
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 backdrop-blur-md overflow-hidden"
+      className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-slate-900/40 backdrop-blur-xl"
       onClick={onClose}
     >
       <motion.div 
-        initial={{ y: "100%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "100%", opacity: 0 }}
-        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        initial={{ scale: 0.9, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.9, opacity: 0, y: 20 }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-full max-w-md rounded-t-[3rem] md:rounded-[3rem] shadow-2xl flex flex-col h-auto max-h-[90vh] border-t md:border border-slate-200/60 relative"
+        className="glass-card w-full max-w-md rounded-[3.5rem] p-10 md:p-12 shadow-[0_50px_100px_rgba(0,0,0,0.1)] border border-slate-200 relative overflow-hidden text-center"
       >
-        <div className="p-6 md:p-8 border-b border-slate-100 flex justify-between items-center gap-4 shrink-0 rounded-t-[3rem] md:rounded-t-[3rem] bg-slate-50/50">
-          <div className="md:hidden absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-slate-200 rounded-full" />
-          <div className="flex items-center gap-4 min-w-0 flex-1">
-            <div className={`p-3 rounded-2xl shrink-0 ${variant === 'danger' ? 'bg-red-100 text-red-600' : 'bg-brand-100 text-brand-600'}`}>
-              <AlertCircle size={24} />
-            </div>
-            <h3 className="text-2xl font-display font-black text-slate-900 truncate tracking-tight">{title}</h3>
-          </div>
-          <button 
-            onClick={onClose} 
-            className="p-3 bg-slate-100 hover:bg-slate-200 rounded-2xl transition-all text-slate-500 hover:scale-110 active:scale-90 shrink-0"
-          >
-            <X size={22} />
-          </button>
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+        
+        <div className={`w-24 h-24 mx-auto rounded-[2rem] flex items-center justify-center mb-8 border shadow-inner relative group ${
+          variant === 'danger' ? 'bg-red-500/10 text-red-600 border-red-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'
+        }`}>
+          <div className={`absolute inset-0 rounded-[2rem] blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-500 ${
+            variant === 'danger' ? 'bg-red-500/20' : 'bg-emerald-500/20'
+          }`}></div>
+          <AlertCircle size={48} strokeWidth={2.5} className="relative z-10" />
         </div>
 
-        <div className="p-6 md:p-8 overflow-y-auto">
-          <p className="text-lg text-slate-600 leading-relaxed font-medium">
-            {message}
-          </p>
-        </div>
+        <h3 className="text-3xl md:text-4xl font-display font-black text-slate-900 mb-4 tracking-tighter leading-tight">
+          {title}
+        </h3>
+        
+        <p className="text-slate-500 text-lg font-bold leading-relaxed mb-10 px-4">
+          {message}
+        </p>
 
-        <div className="p-6 md:p-8 bg-slate-50/50 flex gap-4 shrink-0 rounded-b-[3rem] md:rounded-b-[3rem] border-t border-slate-100">
-          <button 
-            onClick={onClose}
-            className="flex-1 py-5 bg-white border border-slate-200 text-slate-600 text-base font-black rounded-2xl hover:bg-slate-100 transition-all active:scale-95"
-          >
-            {cancelText}
-          </button>
-          <button 
+        <div className="flex flex-col gap-4">
+          <button
             onClick={() => {
               onConfirm();
               onClose();
             }}
-            className={`flex-1 py-5 text-white text-base font-black rounded-2xl transition-all shadow-xl active:scale-95 ${
+            className={`relative overflow-hidden w-full py-6 rounded-[1.5rem] text-[12px] font-black uppercase tracking-[0.3em] transition-all duration-500 flex items-center justify-center gap-3 group/btn active:scale-[0.98] ${
               variant === 'danger' 
-                ? 'bg-red-600 hover:bg-red-700 shadow-red-100' 
-                : 'bg-brand-600 hover:bg-brand-700 shadow-brand-100'
+                ? 'btn-gradient-red text-white' 
+                : 'btn-gradient text-white'
             }`}
           >
-            {confirmText}
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></div>
+            <span className="relative z-10">{confirmText}</span>
+          </button>
+          
+          <button
+            onClick={onClose}
+            className="w-full py-5 btn-gradient-slate text-white font-black uppercase text-[11px] tracking-[0.3em] rounded-[1.5rem] transition-all border border-slate-200 shadow-inner active:scale-95"
+          >
+            {cancelText}
           </button>
         </div>
       </motion.div>

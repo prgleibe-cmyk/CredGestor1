@@ -57,4 +57,21 @@ export interface Settings {
   accentColor?: string;
 }
 
-export type View = 'dashboard' | 'customers' | 'loans' | 'history' | 'settings' | 'reports';
+export interface UserProfile {
+  id: string;
+  email: string;
+  fullName: string;
+  role: 'admin' | 'user';
+  subscriptionStatus: 'active' | 'inactive' | 'pending';
+  monthlyFee: number;
+  trialEndsAt?: string;
+  createdAt: string;
+}
+
+export interface SystemConfig {
+  defaultMonthlyFee: number;
+  defaultTrialDays: number;
+  maintenanceMode: boolean;
+}
+
+export type View = 'dashboard' | 'customers' | 'loans' | 'history' | 'settings' | 'reports' | 'admin';

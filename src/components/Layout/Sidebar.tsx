@@ -8,7 +8,8 @@ import {
   Menu, 
   X,
   LogOut,
-  FileText
+  FileText,
+  Shield
 } from 'lucide-react';
 import { View, Settings } from '../../types';
 import { motion, AnimatePresence } from 'motion/react';
@@ -21,6 +22,7 @@ interface SidebarProps {
   user: any;
   onLogout: () => void;
   settings: Settings;
+  isAdmin?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
@@ -30,7 +32,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   setIsSidebarOpen,
   user,
   onLogout,
-  settings
+  settings,
+  isAdmin = false
 }) => {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -40,6 +43,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'reports', label: 'Relatórios', icon: FileText },
     { id: 'settings', label: 'Configurações', icon: SettingsIcon },
   ];
+
+  if (isAdmin) {
+    navItems.push({ id: 'admin', label: 'Admin', icon: Shield });
+  }
 
   return (
     <>
@@ -59,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside 
         className={`
           fixed md:sticky top-0 h-screen z-50 md:z-20
-          bg-bg-card/80 backdrop-blur-xl border-r border-border-main transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col
+          glass transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] flex flex-col border-r border-slate-200
           ${isSidebarOpen ? 'translate-x-0 w-72' : '-translate-x-full md:translate-x-0 w-72 md:w-24'}
         `}
       >
@@ -75,17 +82,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   className="flex items-center gap-3 overflow-hidden"
                 >
                   <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-tr from-brand-600 to-emerald-400 rounded-xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+                    <div className="absolute -inset-1.5 bg-gradient-to-tr from-emerald-600 to-emerald-400 rounded-xl blur-lg opacity-0 group-hover:opacity-40 transition duration-500"></div>
                     <img 
                       src={settings.logoUrl || "/logo.png"} 
                       alt="Logo" 
-                      className="relative h-10 w-10 object-contain rounded-xl bg-white p-1 dark:brightness-110" 
+                      className="relative h-12 w-12 object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" 
                       referrerPolicy="no-referrer" 
                     />
                   </div>
-                  <span className="text-xl font-display font-extrabold text-text-main tracking-tight whitespace-nowrap">
-                    {settings.companyName}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-xl font-display font-black text-slate-900 tracking-tight leading-none whitespace-nowrap">
+                      {settings.companyName}
+                    </span>
+                    <span className="text-[8px] font-black text-emerald-600 uppercase tracking-[0.3em] mt-1">Enterprise</span>
+                  </div>
                 </motion.div>
               ) : (
                 <motion.div
@@ -93,39 +103,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="mx-auto"
+                  className="mx-auto relative group"
                 >
+                  <div className="absolute -inset-1.5 bg-emerald-500/10 rounded-full blur-lg opacity-0 group-hover:opacity-100 transition duration-500"></div>
                   <img 
                     src={settings.logoUrl || "/logo.png"} 
                     alt="Logo" 
-                    className="w-10 h-10 object-contain drop-shadow-sm dark:brightness-110" 
+                    className="relative w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(0,0,0,0.1)]" 
                     referrerPolicy="no-referrer" 
                   />
                 </motion.div>
               )}
             </AnimatePresence>
-            
-            {isSidebarOpen && (
-              <button 
-                onClick={() => setIsSidebarOpen(false)}
-                className="p-2 hover:bg-bg-main rounded-xl transition-all text-text-muted hover:text-text-main"
-              >
-                <X size={18} />
-              </button>
-            )}
           </div>
-          
-          {!isSidebarOpen && (
-            <button 
-              onClick={() => setIsSidebarOpen(true)}
-              className="p-2.5 bg-bg-main hover:bg-border-main rounded-xl transition-all text-text-muted border border-border-main"
-            >
-              <Menu size={20} />
-            </button>
-          )}
         </div>
 
-        <nav className="flex-1 px-4 space-y-1.5 overflow-y-auto py-2">
+        <nav className="flex-1 px-4 space-y-2 overflow-y-auto py-4">
           {navItems.map((item) => {
             const isActive = activeView === item.id;
             return (
@@ -135,14 +128,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   setActiveView(item.id as View);
                   if (window.innerWidth < 768) setIsSidebarOpen(false);
                 }}
-                className={`w-full flex items-center p-3 rounded-2xl transition-all duration-300 group relative ${
+                className={`w-full flex items-center p-3 rounded-xl transition-all duration-500 group relative overflow-hidden ${
                   isActive 
-                    ? 'bg-brand-600 text-white shadow-lg shadow-brand-200 font-semibold' 
-                    : 'text-text-muted hover:bg-bg-main hover:text-text-main'
+                    ? 'btn-gradient text-white' 
+                    : 'text-slate-500 hover:bg-slate-900/5 hover:text-slate-900'
                 }`}
               >
-                <div className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`}>
-                  <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                {isActive && (
+                  <motion.div 
+                    layoutId="active-bg"
+                    className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-500 -z-10"
+                  />
+                )}
+                
+                <div className={`transition-all duration-500 ${isActive ? 'scale-110 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]' : 'group-hover:scale-110 group-hover:text-white'}`}>
+                  <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
                 </div>
                 
                 <AnimatePresence>
@@ -151,7 +151,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -10 }}
-                      className="ml-4 text-[15px] font-medium whitespace-nowrap"
+                      className={`ml-3 text-[12px] font-black uppercase tracking-widest whitespace-nowrap ${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-900'}`}
                     >
                       {item.label}
                     </motion.span>
@@ -160,8 +160,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {isActive && (
                   <motion.div 
-                    layoutId="active-pill"
-                    className="absolute left-0 w-1 h-6 bg-white rounded-r-full"
+                    layoutId="active-indicator"
+                    className="absolute right-0 w-1.5 h-6 bg-white rounded-l-full"
                   />
                 )}
               </button>
@@ -170,30 +170,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </nav>
 
         <div className="p-4 mt-auto">
-          <div className={`p-4 rounded-3xl transition-all duration-500 ${isSidebarOpen ? 'bg-bg-main border border-border-main' : 'bg-transparent'}`}>
+          <div className={`p-3 rounded-2xl transition-all duration-500 ${isSidebarOpen ? 'bg-slate-900/5 border border-slate-200 shadow-inner' : 'bg-transparent'}`}>
             {isSidebarOpen && (
               <div className="flex items-center gap-3 mb-4 px-1">
-                <div className="relative">
+                <div className="relative group">
+                  <div className="absolute -inset-1 bg-emerald-500/10 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-500"></div>
                   <img 
                     src={user.user_metadata?.avatar_url || user.photoURL || `https://ui-avatars.com/api/?name=${user.user_metadata?.full_name || user.displayName}`} 
                     alt={user.user_metadata?.full_name || user.displayName || ''} 
-                    className="w-10 h-10 rounded-2xl border-2 border-bg-card shadow-sm object-cover"
+                    className="relative w-10 h-10 rounded-xl border-2 border-white shadow-lg object-cover"
                     referrerPolicy="no-referrer"
                   />
-                  <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-brand-500 border-2 border-bg-card rounded-full"></div>
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-lg"></div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold text-text-main truncate font-display">{user.user_metadata?.full_name || user.displayName}</p>
-                  <p className="text-[11px] text-text-muted truncate font-medium">{user.email}</p>
+                  <p className="text-xs font-black text-slate-900 truncate font-display tracking-tight">{user.user_metadata?.full_name || user.displayName}</p>
+                  <p className="text-[9px] text-slate-500 truncate font-black uppercase tracking-widest mt-0.5">{user.email?.split('@')[0]}</p>
                 </div>
               </div>
             )}
             <button 
               onClick={onLogout}
-              className={`w-full flex items-center justify-center p-3 text-text-muted hover:bg-red-50 hover:text-red-600 rounded-2xl transition-all text-sm font-semibold group ${!isSidebarOpen && 'hover:bg-red-50'}`}
+              className={`w-full flex items-center justify-center p-3 btn-gradient-red text-white rounded-xl transition-all text-[9px] font-black uppercase tracking-[0.2em] group ${!isSidebarOpen && 'hover:bg-red-500/10'}`}
             >
-              <LogOut size={20} className="group-hover:-translate-x-0.5 transition-transform" />
-              {isSidebarOpen && <span className="ml-3">Encerrar Sessão</span>}
+              <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
+              {isSidebarOpen && <span className="ml-2">Encerrar Sessão</span>}
             </button>
           </div>
         </div>

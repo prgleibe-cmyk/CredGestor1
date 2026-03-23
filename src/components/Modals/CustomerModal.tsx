@@ -41,79 +41,82 @@ export function CustomerModal({ isOpen, onClose, onSave, customer }: CustomerMod
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 backdrop-blur-md overflow-hidden"
+      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 bg-slate-900/40 backdrop-blur-xl overflow-hidden"
       onClick={onClose}
     >
       <motion.div 
-        initial={{ y: "100%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: "100%", opacity: 0 }}
-        transition={{ type: "spring", damping: 30, stiffness: 300 }}
+        initial={{ y: "100%", opacity: 0, scale: 0.9 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: "100%", opacity: 0, scale: 0.9 }}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white w-full max-w-md rounded-t-[3rem] md:rounded-[3rem] shadow-2xl flex flex-col h-[80vh] md:h-auto md:max-h-[90vh] border-t md:border border-slate-200/60 relative"
+        className="glass-card w-full max-w-xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[85vh] md:h-auto md:max-h-[90vh] border-t md:border border-slate-200 relative overflow-hidden"
       >
-        <div className="p-6 md:p-8 border-b border-border-main flex justify-between items-center gap-4 shrink-0 rounded-t-[3rem] md:rounded-t-[3rem] bg-bg-main/50">
-          <div className="md:hidden absolute top-3 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-border-main rounded-full" />
-          <h3 className="text-2xl font-display font-black text-text-main truncate flex-1 tracking-tight">
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+        
+        <div className="p-8 md:p-10 border-b border-slate-200 flex justify-between items-center gap-6 shrink-0 rounded-t-[4rem] md:rounded-t-[4rem] bg-slate-900/5 relative z-10">
+          <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-slate-900/10 rounded-full shadow-inner" />
+          <h3 className="text-3xl font-display font-black text-slate-900 truncate flex-1 tracking-tighter">
             {customer ? 'Editar Cliente' : 'Novo Cliente'}
           </h3>
           <button 
             onClick={onClose} 
-            className="p-3 bg-bg-main hover:bg-border-main rounded-2xl transition-all text-text-muted hover:scale-110 active:scale-90 shrink-0"
+            className="p-4 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-slate-200 shadow-inner"
           >
-            <X size={22} />
+            <X size={24} strokeWidth={2.5} />
           </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6 overflow-y-auto">
-          <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Nome Completo *</label>
+ 
+        <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8 overflow-y-auto relative z-10 custom-scrollbar">
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Nome Completo *</label>
             <input 
               type="text" 
               required
               placeholder="Ex: João Silva"
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
+              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
             />
           </div>
-          <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">CPF *</label>
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">CPF *</label>
             <input 
               type="text" 
               required
               placeholder="000.000.000-00"
               value={formData.document}
               onChange={e => setFormData({...formData, document: e.target.value})}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-mono font-bold text-text-main transition-all"
+              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-mono font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
             />
           </div>
-          <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Telefone (Opcional)</label>
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Telefone (Opcional)</label>
             <input 
               type="tel" 
               placeholder="(00) 00000-0000"
               value={formData.phone}
               onChange={e => setFormData({...formData, phone: e.target.value})}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-sm font-bold text-text-main transition-all"
+              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
             />
           </div>
-          <div className="space-y-2">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-widest ml-1">Endereço (Opcional)</label>
+          <div className="space-y-3">
+            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Endereço (Opcional)</label>
             <textarea 
               placeholder="Rua, Número, Bairro, Cidade"
               value={formData.address}
               onChange={e => setFormData({...formData, address: e.target.value})}
-              className="w-full p-4 bg-bg-main border border-border-main rounded-2xl focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 h-24 resize-none text-sm font-bold text-text-main transition-all"
+              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 h-32 resize-none text-base font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
             />
           </div>
 
-          <div className="pt-2">
+          <div className="pt-4">
             <button 
               type="submit"
-              className="w-full py-5 bg-brand-600 text-white font-black rounded-[2rem] hover:bg-brand-700 transition-all shadow-xl shadow-brand-100 active:scale-[0.98] text-lg tracking-tight"
+              className="relative overflow-hidden w-full py-6 btn-gradient text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-[1.5rem] active:scale-[0.98] group/btn"
             >
-              {customer ? 'Salvar Alterações' : 'Cadastrar Cliente'}
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></div>
+              <span className="relative z-10">{customer ? 'Salvar Alterações' : 'Cadastrar Cliente'}</span>
             </button>
           </div>
         </form>
