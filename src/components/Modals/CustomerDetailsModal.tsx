@@ -124,12 +124,12 @@ export function CustomerDetailsModal({
         exit={{ y: "100%", opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full max-w-3xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-border-main relative overflow-hidden"
+        className="glass-card w-full max-w-5xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col h-[90vh] md:h-auto md:max-h-[90vh] border-t md:border border-border-main relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         
         {/* Header */}
-        <div className="p-8 md:p-10 border-b border-border-main flex flex-col gap-8 shrink-0 bg-text-main/5 rounded-t-[4rem] md:rounded-t-[4rem] relative z-10">
+        <div className="p-6 md:p-8 border-b border-border-main flex flex-col gap-6 shrink-0 bg-text-main/5 rounded-t-[2.5rem] md:rounded-t-[3rem] relative z-10">
           <div className="w-20 h-1.5 bg-text-main/10 rounded-full mx-auto mb-2 md:hidden shadow-inner" />
           <div className="flex justify-between items-center gap-6">
             <div className="flex items-center gap-6 min-w-0 flex-1">
@@ -205,7 +205,7 @@ export function CustomerDetailsModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8 md:p-12 relative z-10 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-6 md:p-10 relative z-10 custom-scrollbar">
           <AnimatePresence mode="wait">
             {activeTab === 'details' ? (
               <motion.div 
@@ -306,14 +306,14 @@ export function CustomerDetailsModal({
                     ) : (
                       <div className="space-y-10">
                         {/* Loan Summary Cards */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                           {[
                             { label: 'Total', value: formatCurrency(lastLoan.totalToPay), bg: 'bg-brand-500/10', text: 'text-brand-600', border: 'border-brand-500/20' },
                             { label: 'Pago', value: formatCurrency(lastLoan.totalToPay - lastLoan.remainingAmount), bg: 'bg-brand-500/10', text: 'text-brand-600', border: 'border-brand-500/20' },
                             { label: 'Saldo', value: formatCurrency(lastLoan.remainingAmount), bg: 'bg-amber-500/10', text: 'text-amber-600', border: 'border-amber-500/20' },
                             { label: 'Parcelas', value: `${lastLoan.installmentsCount}x`, bg: 'bg-brand-500/10', text: 'text-brand-600', border: 'border-brand-500/20' }
                           ].map((item, i) => (
-                            <div key={i} className={`${item.bg} p-6 rounded-[2rem] border ${item.border} shadow-inner group hover:scale-105 transition-transform duration-500`}>
+                            <div key={i} className={`${item.bg} p-5 rounded-[1.5rem] border ${item.border} shadow-inner group hover:scale-105 transition-transform duration-500`}>
                               <p className={`text-[11px] uppercase font-black ${item.text} tracking-[0.3em] mb-2 opacity-70`}>{item.label}</p>
                               <p className={`text-xl font-display font-black ${item.text}`}>{item.value}</p>
                             </div>
@@ -333,12 +333,12 @@ export function CustomerDetailsModal({
                             </div>
                           </div>
  
-                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-3">
                             {installments.map((inst) => (
                               <button 
                                 key={inst.number}
                                 onClick={() => setSelectedInstallmentNumber(inst.number)}
-                                className={`relative p-6 rounded-[2.5rem] border-2 transition-all text-left group overflow-hidden shadow-inner ${
+                                className={`relative p-4 rounded-[1.5rem] border-2 transition-all text-left group overflow-hidden shadow-inner ${
                                   inst.status === 'paid' ? 'bg-brand-500/10 border-brand-500/20' :
                                   inst.status === 'overdue' ? 'bg-red-500/10 border-red-500/20' :
                                   inst.status === 'upcoming' ? 'bg-brand-500/10 border-brand-500/20 ring-8 ring-brand-500/5' :
