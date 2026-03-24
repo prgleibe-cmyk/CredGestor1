@@ -80,24 +80,24 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
         exit={{ y: "100%", opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full max-w-xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[85vh] md:h-auto md:max-h-[90vh] border-t md:border border-border-main relative overflow-hidden"
+        className="glass-card w-full max-w-2xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[92vh] md:h-auto md:max-h-[90vh] border-t md:border border-border-main relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         
-        <div className="p-8 md:p-10 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[4rem] md:rounded-t-[4rem] bg-text-main/5 relative z-10">
+        <div className="p-4 md:p-6 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[2.5rem] md:rounded-t-[3rem] bg-text-main/5 relative z-10">
           <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-text-main/10 rounded-full shadow-inner" />
-          <h3 className="text-3xl font-display font-black text-text-main truncate flex-1 tracking-tighter">
+          <h3 className="text-xl md:text-2xl font-display font-black text-text-main truncate flex-1 tracking-tighter">
             Registrar Pagamento
           </h3>
           <button 
             onClick={onClose} 
-            className="p-4 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-border-main shadow-inner"
+            className="p-3 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-border-main shadow-inner"
           >
             <X size={24} strokeWidth={2.5} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8 overflow-y-auto relative z-10 custom-scrollbar">
+        <form onSubmit={handleSubmit} className="p-4 md:p-8 space-y-6 overflow-y-auto relative z-10 custom-scrollbar">
           <div className="bg-emerald-500/10 p-8 rounded-[2.5rem] border border-emerald-500/20 shadow-inner relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
             <p className="text-[11px] text-emerald-600 uppercase font-black tracking-[0.3em] mb-2 relative z-10">Cliente</p>

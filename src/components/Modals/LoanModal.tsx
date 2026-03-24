@@ -70,13 +70,13 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
         exit={{ y: "100%", opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full max-w-2xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-border-main relative overflow-hidden"
+        className="glass-card w-full max-w-3xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col h-[96vh] md:h-auto md:max-h-[95vh] border-t md:border border-border-main relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         
-        <div className="p-6 md:p-8 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[2.5rem] md:rounded-t-[3rem] bg-text-main/5 relative z-10">
+        <div className="p-4 md:p-6 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[2.5rem] md:rounded-t-[3rem] bg-text-main/5 relative z-10">
           <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-text-main/10 rounded-full shadow-inner" />
-          <h3 className="text-2xl font-display font-black text-text-main truncate flex-1 tracking-tighter">Novo Empréstimo</h3>
+          <h3 className="text-xl md:text-2xl font-display font-black text-text-main truncate flex-1 tracking-tighter">Novo Empréstimo</h3>
           <button 
             onClick={onClose} 
             className="p-3 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-border-main shadow-inner"
@@ -85,7 +85,7 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-6 overflow-y-auto relative z-10 custom-scrollbar">
+        <form onSubmit={handleSubmit} className="p-4 md:p-8 space-y-4 overflow-y-auto relative z-10 custom-scrollbar">
           <div className="space-y-2">
             <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Cliente</label>
             <div className="relative">
