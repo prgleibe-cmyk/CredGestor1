@@ -115,7 +115,7 @@ export function CustomerDetailsModal({
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 bg-text-main/40 backdrop-blur-xl overflow-hidden"
+      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-2 bg-text-main/40 backdrop-blur-xl overflow-hidden"
       onClick={onClose}
     >
       <motion.div 
@@ -124,7 +124,7 @@ export function CustomerDetailsModal({
         exit={{ y: "100%", opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full max-w-7xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col h-[90vh] md:h-[90vh] border-t md:border border-border-main relative overflow-hidden"
+        className="glass-card w-full max-w-[98vw] rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col h-[96vh] md:h-[96vh] border-t md:border border-border-main relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         
