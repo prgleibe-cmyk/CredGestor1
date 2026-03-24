@@ -38,39 +38,39 @@ export function AdminView({ users, config, onUpdateProfile, onUpdateConfig }: Ad
   };
 
   return (
-    <div className="space-y-10 pb-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="space-y-4 pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-4xl font-display font-black text-slate-900 tracking-tight">Painel Administrativo</h2>
-          <p className="text-slate-500 font-bold mt-2 uppercase tracking-[0.2em] text-[11px]">Gerenciamento do Sistema e Usuários</p>
+          <h2 className="text-xl font-display font-black text-text-main tracking-tight">Painel Administrativo</h2>
+          <p className="text-text-muted font-bold mt-0.5 uppercase tracking-[0.2em] text-[8px]">Gerenciamento do Sistema e Usuários</p>
         </div>
 
-        <div className="flex p-2 bg-slate-900/5 border border-slate-200 rounded-[2rem] shadow-inner">
+        <div className="flex p-1 bg-text-main/5 border border-border-main rounded-xl shadow-inner">
           <button 
             onClick={() => setActiveTab('users')}
-            className={`px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group ${
-              activeTab === 'users' ? 'text-white shadow-2xl shadow-emerald-500/20' : 'text-slate-500 hover:text-slate-900'
+            className={`px-5 py-2 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group ${
+              activeTab === 'users' ? 'text-white shadow-lg shadow-brand-500/10' : 'text-text-muted hover:text-text-main'
             }`}
           >
             {activeTab === 'users' && (
-              <motion.div layoutId="adminTab" className="absolute inset-0 btn-gradient rounded-2xl -z-10" />
+              <motion.div layoutId="adminTab" className="absolute inset-0 btn-gradient rounded-lg -z-10" />
             )}
             <div className="flex items-center gap-2 relative z-10">
-              <Users size={16} strokeWidth={3} />
+              <Users size={12} strokeWidth={3} />
               <span>Usuários</span>
             </div>
           </button>
           <button 
             onClick={() => setActiveTab('system')}
-            className={`px-8 py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group ${
-              activeTab === 'system' ? 'text-white shadow-2xl shadow-emerald-500/20' : 'text-slate-500 hover:text-slate-900'
+            className={`px-5 py-2 rounded-lg text-[8px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group ${
+              activeTab === 'system' ? 'text-white shadow-lg shadow-brand-500/10' : 'text-text-muted hover:text-text-main'
             }`}
           >
             {activeTab === 'system' && (
-              <motion.div layoutId="adminTab" className="absolute inset-0 btn-gradient rounded-2xl -z-10" />
+              <motion.div layoutId="adminTab" className="absolute inset-0 btn-gradient rounded-lg -z-10" />
             )}
             <div className="flex items-center gap-2 relative z-10">
-              <SettingsIcon size={16} strokeWidth={3} />
+              <SettingsIcon size={12} strokeWidth={3} />
               <span>Sistema</span>
             </div>
           </button>
@@ -78,86 +78,86 @@ export function AdminView({ users, config, onUpdateProfile, onUpdateConfig }: Ad
       </div>
 
       {activeTab === 'users' ? (
-        <div className="glass-card rounded-[3rem] border border-slate-200 shadow-2xl overflow-hidden">
+        <div className="glass-card rounded-xl border border-border-main shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-900/5 border-b border-slate-200">
-                  <th className="px-10 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em]">Usuário</th>
-                  <th className="px-10 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em]">Status</th>
-                  <th className="px-10 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em]">Fim do Teste</th>
-                  <th className="px-10 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em]">Mensalidade</th>
-                  <th className="px-10 py-8 text-[11px] font-black text-slate-500 uppercase tracking-[0.3em]">Ações</th>
+                <tr className="bg-text-main/5 border-b border-border-main">
+                  <th className="px-4 py-3 text-[8px] font-black text-text-muted uppercase tracking-[0.3em]">Usuário</th>
+                  <th className="px-4 py-3 text-[8px] font-black text-text-muted uppercase tracking-[0.3em]">Status</th>
+                  <th className="px-4 py-3 text-[8px] font-black text-text-muted uppercase tracking-[0.3em]">Fim do Teste</th>
+                  <th className="px-4 py-3 text-[8px] font-black text-text-muted uppercase tracking-[0.3em]">Mensalidade</th>
+                  <th className="px-4 py-3 text-[8px] font-black text-text-muted uppercase tracking-[0.3em]">Ações</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-border-main">
                 {users.map((user) => (
-                  <tr key={user.id} className="group/row hover:bg-slate-900/5 transition-all duration-500">
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-5">
-                        <div className="w-14 h-14 bg-slate-900/5 rounded-2xl flex items-center justify-center font-black text-xl text-emerald-600 shadow-inner group-hover/row:scale-110 transition-all duration-500">
+                  <tr key={user.id} className="group/row hover:bg-text-main/5 transition-all duration-500">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 bg-text-main/5 rounded-lg flex items-center justify-center font-black text-sm text-brand-600 shadow-inner group-hover/row:scale-110 transition-all duration-500">
                           {user.fullName.charAt(0)}
                         </div>
                         <div>
-                          <p className="font-black text-slate-900 text-lg tracking-tight">{user.fullName}</p>
-                          <p className="text-xs font-bold text-slate-500">{user.email}</p>
+                          <p className="font-black text-text-main text-xs tracking-tight">{user.fullName}</p>
+                          <p className="text-[9px] font-bold text-text-muted">{user.email}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-3">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
                         {user.subscriptionStatus === 'active' ? (
-                          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-600 rounded-full border border-emerald-500/20">
-                            <CheckCircle size={14} strokeWidth={3} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Ativo</span>
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-brand-500/10 text-brand-600 rounded-full border border-brand-500/20">
+                            <CheckCircle size={10} strokeWidth={3} />
+                            <span className="text-[7px] font-black uppercase tracking-widest">Ativo</span>
                           </div>
                         ) : user.subscriptionStatus === 'pending' ? (
-                          <div className="flex items-center gap-2 px-4 py-2 bg-amber-500/10 text-amber-600 rounded-full border border-amber-500/20">
-                            <Clock size={14} strokeWidth={3} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Pendente</span>
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-brand-500/10 text-brand-600 rounded-full border border-brand-500/20 opacity-70">
+                            <Clock size={10} strokeWidth={3} />
+                            <span className="text-[7px] font-black uppercase tracking-widest">Pendente</span>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2 px-4 py-2 bg-red-500/10 text-red-600 rounded-full border border-red-500/20">
-                            <XCircle size={14} strokeWidth={3} />
-                            <span className="text-[10px] font-black uppercase tracking-widest">Inativo</span>
+                          <div className="flex items-center gap-1 px-2 py-0.5 bg-text-main/10 text-text-muted rounded-full border border-border-main">
+                            <XCircle size={10} strokeWidth={3} />
+                            <span className="text-[7px] font-black uppercase tracking-widest">Inativo</span>
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-3">
-                        <Clock size={14} className="text-slate-400" />
-                        <span className="text-xs font-bold text-slate-600">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Clock size={10} className="text-text-muted" />
+                        <span className="text-[9px] font-bold text-text-main">
                           {user.trialEndsAt ? new Date(user.trialEndsAt).toLocaleDateString('pt-BR') : 'N/A'}
                         </span>
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-3">
-                        <CreditCard size={18} className="text-slate-400" />
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <CreditCard size={12} className="text-text-muted" />
                         <input 
                           type="number"
                           value={user.monthlyFee}
                           onChange={(e) => handleUpdateUserFee(user, Number(e.target.value))}
-                          className="w-24 p-2 bg-slate-900/5 border border-slate-200 rounded-xl text-sm font-black text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                          className="w-16 p-1 bg-text-main/5 border border-border-main rounded-lg text-[9px] font-black text-text-main focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                         />
                       </div>
                     </td>
-                    <td className="px-10 py-8">
-                      <div className="flex items-center gap-3">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
                         <button 
                           onClick={() => handleUpdateUserStatus(user, 'active')}
-                          className="p-3 btn-gradient text-white rounded-xl transition-all hover:scale-110 active:scale-90 shadow-lg"
+                          className="p-1.5 btn-gradient text-white rounded-lg transition-all hover:scale-110 active:scale-90 shadow-md"
                           title="Ativar"
                         >
-                          <CheckCircle size={18} strokeWidth={2.5} />
+                          <CheckCircle size={12} strokeWidth={2.5} />
                         </button>
                         <button 
                           onClick={() => handleUpdateUserStatus(user, 'inactive')}
-                          className="p-3 btn-gradient-red text-white rounded-xl transition-all hover:scale-110 active:scale-90 shadow-lg"
+                          className="p-1.5 btn-gradient-red text-white rounded-lg transition-all hover:scale-110 active:scale-90 shadow-md"
                           title="Desativar"
                         >
-                          <XCircle size={18} strokeWidth={2.5} />
+                          <XCircle size={12} strokeWidth={2.5} />
                         </button>
                       </div>
                     </td>
@@ -168,51 +168,51 @@ export function AdminView({ users, config, onUpdateProfile, onUpdateConfig }: Ad
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="glass-card p-10 rounded-[3rem] border border-slate-200 shadow-2xl space-y-8">
-            <div className="flex items-center gap-4 mb-2">
-              <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-600 shadow-inner">
-                <SettingsIcon size={24} strokeWidth={2.5} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="glass-card p-4 rounded-xl border border-border-main shadow-sm space-y-4">
+            <div className="flex items-center gap-2 mb-1">
+              <div className="p-1.5 bg-brand-500/10 rounded-lg text-brand-600 shadow-inner">
+                <SettingsIcon size={16} strokeWidth={2.5} />
               </div>
-              <h3 className="text-2xl font-display font-black text-slate-900 tracking-tight">Configurações Globais</h3>
+              <h3 className="text-base font-display font-black text-text-main tracking-tight">Configurações Globais</h3>
             </div>
 
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Mensalidade Padrão (R$)</label>
+            <div className="space-y-3">
+              <div className="space-y-1">
+                <label className="block text-[8px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Mensalidade Padrão (R$)</label>
                 <input 
                   type="number"
                   value={editingConfig.defaultMonthlyFee}
                   onChange={(e) => setEditingConfig({ ...editingConfig, defaultMonthlyFee: Number(e.target.value) })}
-                  className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all shadow-inner"
+                  className="w-full p-2 bg-text-main/5 border border-border-main rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-xs font-black text-text-main transition-all shadow-inner"
                 />
               </div>
 
-              <div className="space-y-3">
-                <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Dias de Teste Grátis</label>
+              <div className="space-y-1">
+                <label className="block text-[8px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Dias de Teste Grátis</label>
                 <input 
                   type="number"
                   value={editingConfig.defaultTrialDays}
                   onChange={(e) => setEditingConfig({ ...editingConfig, defaultTrialDays: Number(e.target.value) })}
-                  className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all shadow-inner"
+                  className="w-full p-2 bg-text-main/5 border border-border-main rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-xs font-black text-text-main transition-all shadow-inner"
                 />
               </div>
 
-              <div className="flex items-center justify-between p-6 bg-slate-900/5 rounded-[2rem] border border-slate-200 shadow-inner">
-                <div className="flex items-center gap-4">
-                  <div className={`p-3 rounded-2xl border border-slate-200 shadow-inner ${editingConfig.maintenanceMode ? 'bg-amber-500/20 text-amber-600' : 'bg-slate-900/5 text-slate-500'}`}>
-                    <AlertTriangle size={24} strokeWidth={2.5} />
+              <div className="flex items-center justify-between p-3 bg-text-main/5 rounded-xl border border-border-main shadow-inner">
+                <div className="flex items-center gap-2">
+                  <div className={`p-1.5 rounded-lg border border-border-main shadow-inner ${editingConfig.maintenanceMode ? 'bg-brand-500/20 text-brand-600' : 'bg-text-main/5 text-text-muted'}`}>
+                    <AlertTriangle size={16} strokeWidth={2.5} />
                   </div>
                   <div>
-                    <span className="block text-sm font-black uppercase tracking-[0.1em] text-slate-900">Modo Manutenção</span>
-                    <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.2em]">Bloqueia acesso de usuários</span>
+                    <span className="block text-[10px] font-black uppercase tracking-[0.1em] text-text-main">Modo Manutenção</span>
+                    <span className="text-[7px] text-text-muted font-black uppercase tracking-[0.2em]">Bloqueia acesso de usuários</span>
                   </div>
                 </div>
                 <button 
                   onClick={() => setEditingConfig({ ...editingConfig, maintenanceMode: !editingConfig.maintenanceMode })}
-                  className={`w-14 h-8 rounded-full transition-all relative ${editingConfig.maintenanceMode ? 'bg-amber-600' : 'bg-slate-900/10 shadow-inner'}`}
+                  className={`w-10 h-5 rounded-full transition-all relative ${editingConfig.maintenanceMode ? 'bg-brand-600' : 'bg-text-main/10 shadow-inner'}`}
                 >
-                  <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg transition-all ${editingConfig.maintenanceMode ? 'left-7' : 'left-1'}`} />
+                  <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-lg transition-all ${editingConfig.maintenanceMode ? 'left-5.5' : 'left-0.5'}`} />
                 </button>
               </div>
             </div>
@@ -220,20 +220,20 @@ export function AdminView({ users, config, onUpdateProfile, onUpdateConfig }: Ad
             <button 
               onClick={handleSaveConfig}
               disabled={isSavingConfig}
-              className="w-full py-5 btn-gradient text-white font-black uppercase text-[11px] tracking-[0.3em] rounded-[2rem] transition-all flex items-center justify-center gap-4 group border border-slate-200 shadow-inner active:scale-95 disabled:opacity-50"
+              className="w-full py-3 btn-gradient text-white font-black uppercase text-[8px] tracking-[0.3em] rounded-lg transition-all flex items-center justify-center gap-2 group border border-border-main shadow-inner active:scale-95 disabled:opacity-50"
             >
-              <Save size={20} strokeWidth={2.5} />
+              <Save size={14} strokeWidth={2.5} />
               <span>{isSavingConfig ? 'Salvando...' : 'Salvar Configurações'}</span>
             </button>
           </div>
 
-          <div className="glass-card p-10 rounded-[3rem] border border-slate-200 shadow-2xl flex flex-col justify-center items-center text-center space-y-6">
-            <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center text-emerald-600 shadow-inner">
-              <Shield size={48} strokeWidth={2.5} />
+          <div className="glass-card p-4 rounded-xl border border-border-main shadow-sm flex flex-col justify-center items-center text-center space-y-3">
+            <div className="w-12 h-12 bg-brand-500/10 rounded-xl flex items-center justify-center text-brand-600 shadow-inner">
+              <Shield size={24} strokeWidth={2.5} />
             </div>
             <div>
-              <h3 className="text-2xl font-display font-black text-slate-900 tracking-tight">Segurança do Sistema</h3>
-              <p className="text-slate-500 font-bold mt-2 leading-relaxed">
+              <h3 className="text-base font-display font-black text-text-main tracking-tight">Segurança do Sistema</h3>
+              <p className="text-text-muted font-bold mt-0.5 leading-relaxed text-[10px]">
                 Como administrador, você tem controle total sobre o acesso dos usuários e as taxas do sistema.
                 Certifique-se de validar as alterações antes de salvar.
               </p>

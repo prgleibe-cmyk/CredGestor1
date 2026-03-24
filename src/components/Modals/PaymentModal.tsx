@@ -71,7 +71,7 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 bg-slate-900/40 backdrop-blur-xl overflow-hidden"
+      className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 bg-text-main/40 backdrop-blur-xl overflow-hidden"
       onClick={onClose}
     >
       <motion.div 
@@ -80,18 +80,18 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
         exit={{ y: "100%", opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full max-w-xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[85vh] md:h-auto md:max-h-[90vh] border-t md:border border-slate-200 relative overflow-hidden"
+        className="glass-card w-full max-w-xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[85vh] md:h-auto md:max-h-[90vh] border-t md:border border-border-main relative overflow-hidden"
       >
-        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         
-        <div className="p-8 md:p-10 border-b border-slate-200 flex justify-between items-center gap-6 shrink-0 rounded-t-[4rem] md:rounded-t-[4rem] bg-slate-900/5 relative z-10">
-          <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-slate-900/10 rounded-full shadow-inner" />
-          <h3 className="text-3xl font-display font-black text-slate-900 truncate flex-1 tracking-tighter">
+        <div className="p-8 md:p-10 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[4rem] md:rounded-t-[4rem] bg-text-main/5 relative z-10">
+          <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-text-main/10 rounded-full shadow-inner" />
+          <h3 className="text-3xl font-display font-black text-text-main truncate flex-1 tracking-tighter">
             Registrar Pagamento
           </h3>
           <button 
             onClick={onClose} 
-            className="p-4 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-slate-200 shadow-inner"
+            className="p-4 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-border-main shadow-inner"
           >
             <X size={24} strokeWidth={2.5} />
           </button>
@@ -101,9 +101,9 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
           <div className="bg-emerald-500/10 p-8 rounded-[2.5rem] border border-emerald-500/20 shadow-inner relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
             <p className="text-[11px] text-emerald-600 uppercase font-black tracking-[0.3em] mb-2 relative z-10">Cliente</p>
-            <p className="font-display font-black text-3xl text-slate-900 leading-tight relative z-10">{loan.customerName}</p>
-            <div className="flex justify-between mt-6 p-4 bg-slate-900/5 rounded-2xl border border-slate-200 relative z-10 shadow-inner">
-              <span className="text-sm font-bold text-slate-500">Saldo Restante:</span>
+            <p className="font-display font-black text-3xl text-text-main leading-tight relative z-10">{loan.customerName}</p>
+            <div className="flex justify-between mt-6 p-4 bg-text-main/5 rounded-2xl border border-border-main relative z-10 shadow-inner">
+              <span className="text-sm font-bold text-text-muted">Saldo Restante:</span>
               <span className="font-black text-emerald-600">{formatCurrency(loan.remainingAmount)}</span>
             </div>
           </div>
@@ -139,11 +139,11 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
             <button
               type="button"
               onClick={() => setFormData({ ...formData, amount: Number(normal.toFixed(2)) })}
-              className="p-6 bg-slate-900/5 border border-slate-200 rounded-[2rem] hover:bg-slate-900/10 transition-all text-left group active:scale-95 shadow-inner relative overflow-hidden"
+              className="p-6 bg-text-main/5 border border-border-main rounded-[2rem] hover:bg-text-main/10 transition-all text-left group active:scale-95 shadow-inner relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <p className="text-[11px] text-slate-500 uppercase font-black tracking-[0.3em] mb-2 group-hover:text-emerald-600 transition-colors relative z-10">Normal</p>
-              <p className="font-black text-xl text-slate-900 relative z-10">{formatCurrency(normal)}</p>
+              <p className="text-[11px] text-text-muted uppercase font-black tracking-[0.3em] mb-2 group-hover:text-emerald-600 transition-colors relative z-10">Normal</p>
+              <p className="font-black text-xl text-text-main relative z-10">{formatCurrency(normal)}</p>
             </button>
             <button
               type="button"
@@ -151,19 +151,19 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
               className={`p-6 border rounded-[2rem] transition-all text-left group active:scale-95 shadow-inner relative overflow-hidden ${
                 delayDays > 0 
                   ? 'bg-red-500/10 border-red-500/20 hover:bg-red-500/20' 
-                  : 'bg-slate-900/5 border-slate-200 hover:bg-slate-900/10'
+                  : 'bg-text-main/5 border-border-main hover:bg-text-main/10'
               }`}
             >
               <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity ${delayDays > 0 ? 'bg-red-500/5' : 'bg-emerald-500/5'}`}></div>
-              <p className={`text-[11px] uppercase font-black tracking-[0.3em] mb-2 transition-colors relative z-10 ${delayDays > 0 ? 'text-red-600 group-hover:text-red-500' : 'text-slate-500 group-hover:text-emerald-600'}`}>
+              <p className={`text-[11px] uppercase font-black tracking-[0.3em] mb-2 transition-colors relative z-10 ${delayDays > 0 ? 'text-red-600 group-hover:text-red-500' : 'text-text-muted group-hover:text-emerald-600'}`}>
                 Corrigido
               </p>
-              <p className={`font-black text-xl relative z-10 ${delayDays > 0 ? 'text-red-600' : 'text-slate-900'}`}>{formatCurrency(corrected)}</p>
+              <p className={`font-black text-xl relative z-10 ${delayDays > 0 ? 'text-red-600' : 'text-text-main'}`}>{formatCurrency(corrected)}</p>
             </button>
           </div>
 
           <div className="space-y-3">
-            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Valor do Pagamento (R$)</label>
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Valor do Pagamento (R$)</label>
             <div className="relative">
               <input 
                 type="number" 
@@ -173,31 +173,31 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
                 step="0.01"
                 value={formData.amount || ''}
                 onChange={e => setFormData({...formData, amount: Number(e.target.value)})}
-                className="w-full p-6 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-2xl font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
+                className="w-full p-6 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-2xl font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
               />
-              <div className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-500 opacity-20">
+              <div className="absolute right-6 top-1/2 -translate-y-1/2 text-text-muted opacity-20">
                 <DollarSign size={32} strokeWidth={2.5} />
               </div>
             </div>
           </div>
 
           <div className="space-y-3">
-            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Data do Pagamento</label>
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Data do Pagamento</label>
             <input 
               type="date" 
               required
               value={formData.date}
               onChange={e => setFormData({...formData, date: e.target.value})}
-              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-slate-900 transition-all shadow-inner"
+              className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all shadow-inner"
             />
           </div>
 
           <div className="space-y-3">
-            <label className="block text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">Observações (Opcional)</label>
+            <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Observações (Opcional)</label>
             <textarea 
               value={formData.notes}
               onChange={e => setFormData({...formData, notes: e.target.value})}
-              className="w-full p-5 bg-white/60 border border-slate-200 rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 h-32 resize-none text-base font-black text-slate-900 transition-all placeholder:text-slate-400 shadow-inner"
+              className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 h-32 resize-none text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
               placeholder="Ex: Pagamento com juros..."
             />
           </div>
@@ -207,22 +207,22 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
               className={`flex items-center gap-5 p-6 rounded-[2.5rem] border transition-all cursor-pointer active:scale-[0.98] shadow-inner ${
                 formData.sendWhatsApp 
                   ? 'bg-emerald-500/10 border-emerald-500/20' 
-                  : 'bg-slate-900/5 border-slate-200'
+                  : 'bg-text-main/5 border-border-main'
               }`} 
               onClick={() => setFormData({...formData, sendWhatsApp: !formData.sendWhatsApp})}
             >
-              <div className={`w-14 h-8 rounded-full transition-all relative ${formData.sendWhatsApp ? 'bg-emerald-600' : 'bg-slate-900/10 shadow-inner'}`}>
-                <div className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow-lg transition-all ${formData.sendWhatsApp ? 'left-7' : 'left-1'}`} />
+              <div className={`w-14 h-8 rounded-full transition-all relative ${formData.sendWhatsApp ? 'bg-emerald-600' : 'bg-text-main/10 shadow-inner'}`}>
+                <div className={`absolute top-1 w-6 h-6 bg-bg-main rounded-full shadow-lg transition-all ${formData.sendWhatsApp ? 'left-7' : 'left-1'}`} />
               </div>
               <div className="flex items-center gap-4">
-                <div className={`p-3 rounded-2xl border border-slate-200 shadow-inner ${formData.sendWhatsApp ? 'bg-emerald-500/20 text-emerald-600' : 'bg-slate-900/5 text-slate-500'}`}>
+                <div className={`p-3 rounded-2xl border border-border-main shadow-inner ${formData.sendWhatsApp ? 'bg-emerald-500/20 text-emerald-600' : 'bg-text-main/5 text-text-muted'}`}>
                   <MessageCircle size={24} strokeWidth={2.5} />
                 </div>
                 <div>
-                  <span className={`block text-sm font-black uppercase tracking-[0.1em] ${formData.sendWhatsApp ? 'text-slate-900' : 'text-slate-500'}`}>
+                  <span className={`block text-sm font-black uppercase tracking-[0.1em] ${formData.sendWhatsApp ? 'text-text-main' : 'text-text-muted'}`}>
                     Enviar via WhatsApp
                   </span>
-                  <span className="text-[10px] text-slate-600 font-black uppercase tracking-[0.2em]">Confirmação automática</span>
+                  <span className="text-[10px] text-text-muted font-black uppercase tracking-[0.2em]">Confirmação automática</span>
                 </div>
               </div>
             </div>
@@ -231,11 +231,11 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
               <motion.div 
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                className="p-8 bg-slate-900/5 rounded-[3rem] border border-slate-200 relative overflow-hidden shadow-inner"
+                className="p-8 bg-text-main/5 rounded-[3rem] border border-border-main relative overflow-hidden shadow-inner"
               >
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] opacity-5 pointer-events-none"></div>
                 <div className="relative z-10">
-                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] mb-6 text-center">Prévia da Mensagem</p>
+                  <p className="text-[10px] text-text-muted font-black uppercase tracking-[0.3em] mb-6 text-center">Prévia da Mensagem</p>
                   <div className="bg-emerald-600/10 p-6 rounded-3xl rounded-tl-none border border-emerald-500/20 max-w-[95%] ml-0 relative shadow-2xl">
                     <div className="absolute top-0 -left-2 w-0 h-0 border-t-[12px] border-t-emerald-600/10 border-l-[12px] border-l-transparent"></div>
                     <p className="text-sm font-black text-emerald-900 leading-relaxed whitespace-pre-wrap">

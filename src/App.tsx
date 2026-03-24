@@ -30,6 +30,20 @@ import { formatPhoneForWhatsApp, formatCurrency } from './utils/formatters';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
 
+// Memoized Views
+const MemoizedDashboardView = React.memo(DashboardView);
+const MemoizedCustomersView = React.memo(CustomersView);
+const MemoizedLoansView = React.memo(LoansView);
+const MemoizedHistoryView = React.memo(HistoryView);
+const MemoizedSettingsView = React.memo(SettingsView);
+const MemoizedReportsView = React.memo(ReportsView);
+const MemoizedAdminView = React.memo(AdminView);
+
+// Memoized Modals
+const MemoizedLoanModal = React.memo(LoanModal);
+const MemoizedCustomerModal = React.memo(CustomerModal);
+const MemoizedPaymentModal = React.memo(PaymentModal);
+
 function LoginScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -79,25 +93,25 @@ function LoginScreen() {
   };
 
   return (
-    <div className="h-screen bg-bg-main flex flex-col md:flex-row relative overflow-hidden font-sans text-text-main">
+    <div className="h-screen bg-bg-main flex flex-col md:flex-row relative overflow-hidden font-sans text-text-main transition-colors duration-300">
       {/* Dynamic Background Elements */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-500/10 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-brand-500/10 rounded-full blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-brand-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '3s' }}></div>
         
         {/* Floating Glass Elements */}
         <motion.div 
           animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[20%] right-[15%] w-64 h-64 bg-white/40 backdrop-blur-3xl rounded-[3rem] border border-white/20 shadow-2xl hidden lg:block"
+          className="absolute top-[20%] right-[15%] w-64 h-64 bg-bg-card/40 backdrop-blur-3xl rounded-[3rem] border border-border-main/20 shadow-2xl hidden lg:block"
         />
         <motion.div 
           animate={{ y: [0, 30, 0], rotate: [0, -10, 0] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-[10%] left-[5%] w-48 h-48 bg-white/40 backdrop-blur-2xl rounded-[2.5rem] border border-white/20 shadow-2xl hidden lg:block"
+          className="absolute bottom-[10%] left-[5%] w-48 h-48 bg-bg-card/40 backdrop-blur-2xl rounded-[2.5rem] border border-border-main/20 shadow-2xl hidden lg:block"
         />
 
-        <div className="absolute inset-0 bg-[radial-gradient(#000000_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.05]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(var(--color-text-main)_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.05]"></div>
         
         {/* Crumpled Texture Overlay */}
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none mix-blend-multiply" 
@@ -117,39 +131,39 @@ function LoginScreen() {
           className="max-w-xl relative"
         >
           {/* Subtle glass backdrop for text */}
-          <div className="absolute -inset-8 bg-white/40 backdrop-blur-sm rounded-[3rem] -z-10 border border-white/20 hidden lg:block shadow-xl"></div>
+          <div className="absolute -inset-8 bg-bg-card/40 backdrop-blur-sm rounded-[3rem] -z-10 border border-border-main/20 hidden lg:block shadow-xl"></div>
 
           {/* Logo & Header */}
           <motion.div variants={itemVariants} className="flex items-center gap-4 mb-6 md:mb-8">
             <div className="relative group">
-              <div className="absolute -inset-3 bg-emerald-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
-              <img src="/logo.png" alt="CredGestor" className="h-16 md:h-20 w-auto object-contain relative drop-shadow-[0_0_10px_rgba(0,0,0,0.1)]" referrerPolicy="no-referrer" />
+              <div className="absolute -inset-3 bg-brand-500/20 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-500"></div>
+              <img src="/logo.png" alt="CredGestor" className="h-16 md:h-20 w-auto object-contain relative drop-shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:brightness-110" referrerPolicy="no-referrer" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight leading-none">CredGestor</h1>
-              <p className="text-[9px] font-bold text-emerald-600 uppercase tracking-[0.4em] mt-1.5">Enterprise System</p>
+              <h1 className="text-2xl md:text-3xl font-display font-black text-text-main tracking-tight leading-none">CredGestor</h1>
+              <p className="text-[9px] font-bold text-brand-600 uppercase tracking-[0.4em] mt-1.5">Enterprise System</p>
             </div>
           </motion.div>
 
           {/* Badge */}
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2.5 bg-white/60 border border-white/40 px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm shadow-sm">
+          <motion.div variants={itemVariants} className="inline-flex items-center gap-2.5 bg-bg-card/60 border border-border-main/40 px-4 py-1.5 rounded-full mb-6 backdrop-blur-sm shadow-sm">
             <div className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
             </div>
-            <span className="text-[10px] font-bold text-slate-600 uppercase tracking-[0.2em]">Tecnologia Certificada</span>
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.2em]">Tecnologia Certificada</span>
           </motion.div>
 
           {/* Main Headline */}
-          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl lg:text-6xl font-display font-black text-slate-900 leading-[1.1] mb-5 tracking-tighter">
+          <motion.h2 variants={itemVariants} className="text-3xl md:text-4xl lg:text-6xl font-display font-black text-text-main leading-[1.1] mb-5 tracking-tighter">
             Gestão com <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-emerald-500 to-brand-600 animate-gradient-x">Precisão Absoluta.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 via-brand-500 to-emerald-600 animate-gradient-x">Precisão Absoluta.</span>
           </motion.h2>
 
           {/* Subtext */}
           <motion.div variants={itemVariants} className="flex gap-6 mb-8">
-            <div className="w-1.5 bg-gradient-to-b from-emerald-500 to-brand-500 rounded-full"></div>
-            <p className="text-slate-600 text-base md:text-lg font-medium leading-relaxed max-w-md">
+            <div className="w-1.5 bg-gradient-to-b from-brand-500 to-emerald-500 rounded-full"></div>
+            <p className="text-text-muted text-base md:text-lg font-medium leading-relaxed max-w-md">
               A plataforma definitiva para gestão de empréstimos. 
               Segurança, velocidade e controle total em um só lugar.
             </p>
@@ -159,17 +173,17 @@ function LoginScreen() {
           <motion.div variants={itemVariants} className="flex items-center gap-4">
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className={`w-10 h-10 rounded-full border-4 border-white bg-gradient-to-br shadow-xl ${
-                  i === 1 ? 'from-emerald-500 to-teal-500' : 
+                <div key={i} className={`w-10 h-10 rounded-full border-4 border-bg-card bg-gradient-to-br shadow-xl ${
+                  i === 1 ? 'from-brand-500 to-emerald-500' : 
                   i === 2 ? 'from-blue-500 to-indigo-500' : 
-                  i === 3 ? 'from-brand-500 to-emerald-500' : 
-                  'from-slate-200 to-slate-400'
+                  i === 3 ? 'from-emerald-500 to-brand-500' : 
+                  'from-text-muted/20 to-text-muted/40'
                 }`}></div>
               ))}
             </div>
             <div>
-              <p className="text-slate-900 font-black text-sm tracking-tight">Confiança Total</p>
-              <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em]">Líderes de todo o Brasil</p>
+              <p className="text-text-main font-black text-sm tracking-tight">Confiança Total</p>
+              <p className="text-text-muted text-[10px] font-bold uppercase tracking-[0.2em]">Líderes de todo o Brasil</p>
             </div>
           </motion.div>
         </motion.div>
@@ -181,14 +195,14 @@ function LoginScreen() {
           initial={{ opacity: 0, y: 40, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] as any, delay: 0.4 }}
-          className="bg-white w-full max-w-[420px] rounded-[2.5rem] p-6 md:p-10 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.5)] relative overflow-hidden my-auto"
+          className="bg-bg-card w-full max-w-[420px] rounded-[2.5rem] p-6 md:p-10 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.5)] border border-border-main/50 relative overflow-hidden my-auto transition-colors duration-300"
         >
           {/* Decorative corner accent */}
-          <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-50 rounded-bl-[2.5rem] -mr-10 -mt-10 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-20 h-20 bg-brand-500/5 rounded-bl-[2.5rem] -mr-10 -mt-10 pointer-events-none"></div>
           
           <div className="text-center mb-6 relative">
-            <h3 className="text-xl md:text-2xl font-display font-black text-slate-900 mb-1 tracking-tight">Bem-vindo</h3>
-            <p className="text-slate-500 text-[11px] font-semibold">Faça login para acessar sua conta.</p>
+            <h3 className="text-xl md:text-2xl font-display font-black text-text-main mb-1 tracking-tight">Bem-vindo</h3>
+            <p className="text-text-muted text-[11px] font-semibold">Faça login para acessar sua conta.</p>
           </div>
 
           <AnimatePresence mode="wait">
@@ -197,7 +211,7 @@ function LoginScreen() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mb-6 p-4 bg-red-50 text-red-600 text-xs rounded-[1.5rem] font-bold border border-red-100 flex items-center gap-3"
+                className="mb-6 p-4 bg-red-500/10 text-red-600 text-xs rounded-[1.5rem] font-bold border border-red-500/20 flex items-center gap-3"
               >
                 <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
                 {error}
@@ -214,9 +228,9 @@ function LoginScreen() {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-2"
                 >
-                  <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Nome Completo</label>
+                  <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] ml-2">Nome Completo</label>
                   <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted group-focus-within:text-brand-500 transition-colors">
                       <UserIcon size={16} />
                     </div>
                     <input
@@ -225,7 +239,7 @@ function LoginScreen() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       placeholder="Seu nome"
-                      className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm"
+                      className="w-full pl-12 pr-5 py-3.5 bg-text-main/5 border-2 border-transparent rounded-2xl focus:bg-bg-card focus:border-brand-500/20 focus:ring-4 focus:ring-brand-500/5 outline-none transition-all font-bold text-text-main placeholder:text-text-muted/40 text-sm"
                     />
                   </div>
                 </motion.div>
@@ -233,9 +247,9 @@ function LoginScreen() {
             </AnimatePresence>
 
             <div className="space-y-2">
-              <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Email Corporativo</label>
+              <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em] ml-2">Email Corporativo</label>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted group-focus-within:text-brand-500 transition-colors">
                   <Mail size={16} />
                 </div>
                 <input
@@ -244,18 +258,18 @@ function LoginScreen() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
-                  className="w-full pl-12 pr-5 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm"
+                  className="w-full pl-12 pr-5 py-3.5 bg-text-main/5 border-2 border-transparent rounded-2xl focus:bg-bg-card focus:border-brand-500/20 focus:ring-4 focus:ring-brand-500/5 outline-none transition-all font-bold text-text-main placeholder:text-text-muted/40 text-sm"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center px-2">
-                <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Senha de Acesso</label>
-                <button type="button" className="text-[9px] font-bold text-emerald-600 hover:text-emerald-700 tracking-wider">ESQUECEU?</button>
+                <label className="text-[9px] font-black text-text-muted uppercase tracking-[0.2em]">Senha de Acesso</label>
+                <button type="button" className="text-[9px] font-bold text-brand-600 hover:text-brand-700 tracking-wider">ESQUECEU?</button>
               </div>
               <div className="relative group">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-emerald-500 transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted group-focus-within:text-brand-500 transition-colors">
                   <Lock size={16} />
                 </div>
                 <input
@@ -264,12 +278,12 @@ function LoginScreen() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••"
-                  className="w-full pl-12 pr-12 py-3.5 bg-slate-50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-emerald-500/20 focus:ring-4 focus:ring-emerald-500/5 outline-none transition-all font-bold text-slate-900 placeholder:text-slate-300 text-sm"
+                  className="w-full pl-12 pr-12 py-3.5 bg-text-main/5 border-2 border-transparent rounded-2xl focus:bg-bg-card focus:border-brand-500/20 focus:ring-4 focus:ring-brand-500/5 outline-none transition-all font-bold text-text-main placeholder:text-text-muted/40 text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-emerald-500 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-text-muted hover:text-brand-500 transition-colors"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -298,11 +312,11 @@ function LoginScreen() {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-[10px] font-bold text-slate-400">
+            <p className="text-[10px] font-bold text-text-muted">
               {isLogin ? 'NOVO POR AQUI?' : 'JÁ TEM CONTA?'} {' '}
               <button
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-slate-900 underline underline-offset-8 decoration-2 decoration-emerald-500/30 hover:decoration-emerald-500 transition-all ml-2"
+                className="text-text-main underline underline-offset-8 decoration-2 decoration-brand-500/30 hover:decoration-brand-500 transition-all ml-2"
               >
                 {isLogin ? 'CRIAR MINHA CONTA' : 'ENTRAR AGORA'}
               </button>
@@ -420,9 +434,9 @@ function AppContent() {
         settings={settings}
         isAdmin={isAdmin}
       >
-        {activeView === 'dashboard' && <DashboardView loans={loans} customers={customers} payments={payments} />}
+        {activeView === 'dashboard' && <MemoizedDashboardView loans={loans} customers={customers} payments={payments} />}
         {activeView === 'customers' && (
-          <CustomersView 
+          <MemoizedCustomersView 
             customers={customers} 
             loans={loans} 
             payments={payments}
@@ -443,11 +457,11 @@ function AppContent() {
             }}
           />
         )}
-        {activeView === 'loans' && <LoansView loans={loans} onPayment={handleOpenPayment} />}
-        {activeView === 'history' && <HistoryView payments={payments} loans={loans} />}
-        {activeView === 'reports' && <ReportsView loans={loans} customers={customers} payments={payments} />}
+        {activeView === 'loans' && <MemoizedLoansView loans={loans} onPayment={handleOpenPayment} />}
+        {activeView === 'history' && <MemoizedHistoryView payments={payments} loans={loans} />}
+        {activeView === 'reports' && <MemoizedReportsView loans={loans} customers={customers} payments={payments} />}
         {activeView === 'settings' && (
-          <SettingsView 
+          <MemoizedSettingsView 
             onClearData={clearAllData} 
             customers={customers} 
             loans={loans} 
@@ -457,7 +471,7 @@ function AppContent() {
           />
         )}
         {activeView === 'admin' && isAdmin && (
-          <AdminView 
+          <MemoizedAdminView 
             users={allUsers}
             config={systemConfig}
             onUpdateProfile={updateProfile}
@@ -467,7 +481,7 @@ function AppContent() {
       </MainLayout>
 
       {/* Modals */}
-      <LoanModal 
+      <MemoizedLoanModal 
         isOpen={isLoanModalOpen} 
         onClose={() => setIsLoanModalOpen(false)} 
         customers={customers}
@@ -477,7 +491,7 @@ function AppContent() {
           setIsLoanModalOpen(false);
         }}
       />
-      <CustomerModal
+      <MemoizedCustomerModal
         isOpen={isCustomerModalOpen}
         onClose={() => setIsCustomerModalOpen(false)}
         customer={editingCustomer}
@@ -490,7 +504,7 @@ function AppContent() {
           setIsCustomerModalOpen(false);
         }}
       />
-      <PaymentModal
+      <MemoizedPaymentModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         loan={selectedLoan}

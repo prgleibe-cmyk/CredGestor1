@@ -110,153 +110,191 @@ export function useStorage() {
       return;
     }
 
-    const fetchData = async () => {
-      setLoading(true);
+    const fetchCustomers = async () => {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .order('name');
+      
+      if (error) throw error;
+      setCustomers((data || []).map(c => ({
+        id: c.id,
+        name: c.name,
+        phone: c.phone,
+        address: c.address,
+        document: c.document,
+        createdAt: c.created_at,
+        createdBy: c.user_id
+      })));
+    };
+
+    const fetchLoans = async () => {
+      const { data, error } = await supabase
+        .from('loans')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      setLoans((data || []).map(l => ({
+        id: l.id,
+        customerId: l.customer_id,
+        customerName: l.customer_name || '',
+        amount: Number(l.amount),
+        interestRate: Number(l.interest_rate),
+        interestType: l.interest_type as any,
+        totalToPay: Number(l.total_to_pay),
+        remainingAmount: Number(l.remaining_amount),
+        installmentsCount: l.installments,
+        frequency: l.frequency as any,
+        startDate: l.start_date,
+        status: l.status as any,
+        createdAt: l.created_at,
+        createdBy: l.user_id
+      })));
+    };
+
+    const fetchPayments = async () => {
+      const { data, error } = await supabase
+        .from('payments')
+        .select('*')
+        .order('date', { ascending: false });
+      
+      if (error) throw error;
+      setPayments((data || []).map(p => ({
+        id: p.id,
+        loanId: p.loan_id,
+        amount: Number(p.amount),
+        date: p.date,
+        notes: p.notes || '',
+        createdBy: p.user_id
+      })));
+    };
+
+    const fetchSettings = async () => {
+      if (!user) return;
       try {
-        // Fetch Customers
-        const { data: customersData, error: customersError } = await supabase
-          .from('customers')
-          .select('*')
-          .order('name');
-        
-        if (customersError) throw customersError;
-        setCustomers((customersData || []).map(c => ({
-          id: c.id,
-          name: c.name,
-          phone: c.phone,
-          address: c.address,
-          document: c.document,
-          createdAt: c.created_at,
-          createdBy: c.user_id
-        })));
-
-        // Fetch Loans
-        const { data: loansData, error: loansError } = await supabase
-          .from('loans')
-          .select('*')
-          .order('created_at', { ascending: false });
-        
-        if (loansError) throw loansError;
-        setLoans((loansData || []).map(l => ({
-          id: l.id,
-          customerId: l.customer_id,
-          customerName: l.customer_name || '',
-          amount: Number(l.amount),
-          interestRate: Number(l.interest_rate),
-          interestType: l.interest_type as any,
-          totalToPay: Number(l.total_to_pay),
-          remainingAmount: Number(l.remaining_amount),
-          installmentsCount: l.installments,
-          frequency: l.frequency as any,
-          startDate: l.start_date,
-          status: l.status as any,
-          createdAt: l.created_at,
-          createdBy: l.user_id
-        })));
-
-        // Fetch Payments
-        const { data: paymentsData, error: paymentsError } = await supabase
-          .from('payments')
-          .select('*')
-          .order('date', { ascending: false });
-        
-        if (paymentsError) throw paymentsError;
-        setPayments((paymentsData || []).map(p => ({
-          id: p.id,
-          loanId: p.loan_id,
-          amount: Number(p.amount),
-          date: p.date,
-          notes: p.notes || '',
-          createdBy: p.user_id
-        })));
-
-        // Fetch Settings
-        const { data: settingsData, error: settingsError } = await supabase
+        const { data, error } = await supabase
           .from('settings')
           .select('*')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle(); // Use maybeSingle to avoid errors if not found
         
-        if (settingsError && settingsError.code !== 'PGRST116') throw settingsError;
-        if (settingsData) {
+        if (error) throw error;
+        if (data) {
           setSettings({
-            companyName: settingsData.company_name,
-            defaultInterestRate: Number(settingsData.default_interest_rate || 10),
-            document: settingsData.document,
-            address: settingsData.address,
-            phone: settingsData.phone,
-            logoUrl: settingsData.logo_url,
-            darkMode: settingsData.theme === 'dark',
-            accentColor: settingsData.accent_color || '#16a34a'
+            companyName: data.company_name,
+            defaultInterestRate: Number(data.default_interest_rate || 10),
+            document: data.document,
+            address: data.address,
+            phone: data.phone,
+            logoUrl: data.logo_url,
+            darkMode: data.theme === 'dark',
+            accentColor: data.accent_color || '#16a34a'
           });
         }
-
-        // Admin specific data
-        if (user.email === ADMIN_EMAIL) {
-          const { data: profilesData, error: profilesError } = await supabase
-            .from('profiles')
-            .select('*')
-            .order('created_at', { ascending: false });
-          
-          if (!profilesError) {
-            setAllUsers((profilesData || []).map(p => ({
-              id: p.id,
-              email: p.email,
-              fullName: p.full_name,
-              role: p.role,
-              subscriptionStatus: p.subscription_status,
-              monthlyFee: Number(p.monthly_fee || 0),
-              trialEndsAt: p.trial_ends_at,
-              createdAt: p.created_at
-            })));
-          }
-
-          const { data: configData, error: configError } = await supabase
-            .from('system_config')
-            .select('*')
-            .single();
-          
-          if (!configError && configData) {
-            setSystemConfig({
-              defaultMonthlyFee: Number(configData.default_monthly_fee || 50),
-              defaultTrialDays: Number(configData.default_trial_days || 7),
-              maintenanceMode: configData.maintenance_mode || false
-            });
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching data from Supabase:', error);
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching settings:', err);
       }
     };
 
-    fetchData();
+    const fetchAdminData = async () => {
+      if (user?.email !== ADMIN_EMAIL) return;
+      
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (!profilesError) {
+        setAllUsers((profilesData || []).map(p => ({
+          id: p.id,
+          email: p.email,
+          fullName: p.full_name,
+          role: p.role,
+          subscriptionStatus: p.subscription_status,
+          monthlyFee: Number(p.monthly_fee || 0),
+          trialEndsAt: p.trial_ends_at,
+          createdAt: p.created_at
+        })));
+      }
 
-    // Set up real-time subscriptions
+      const { data: configData, error: configError } = await supabase
+        .from('system_config')
+        .select('*')
+        .single();
+      
+      if (!configError && configData) {
+        setSystemConfig({
+          defaultMonthlyFee: Number(configData.default_monthly_fee || 50),
+          defaultTrialDays: Number(configData.default_trial_days || 7),
+          maintenanceMode: configData.maintenance_mode || false
+        });
+      }
+    };
+
+    const fetchData = async (isInitial = false) => {
+      if (isInitial) setLoading(true);
+      try {
+        await Promise.all([
+          fetchCustomers(),
+          fetchLoans(),
+          fetchPayments(),
+          fetchSettings(),
+          fetchAdminData()
+        ]);
+      } catch (error) {
+        console.error('Error fetching data from Supabase:', error);
+      } finally {
+        if (isInitial) setLoading(false);
+      }
+    };
+
+    fetchData(true);
+
+    // Set up real-time subscriptions with filters where possible
     const customersSubscription = supabase
-      .channel('public:customers')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'customers' }, fetchData)
+      .channel(`public:customers:${user.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'customers',
+        filter: `user_id=eq.${user.id}`
+      }, fetchCustomers)
       .subscribe();
 
     const loansSubscription = supabase
-      .channel('public:loans')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'loans' }, fetchData)
+      .channel(`public:loans:${user.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'loans',
+        filter: `user_id=eq.${user.id}`
+      }, fetchLoans)
       .subscribe();
 
     const paymentsSubscription = supabase
-      .channel('public:payments')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, fetchData)
+      .channel(`public:payments:${user.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'payments',
+        filter: `user_id=eq.${user.id}`
+      }, fetchPayments)
       .subscribe();
 
     const settingsSubscription = supabase
-      .channel('public:settings')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, fetchData)
+      .channel(`public:settings:${user.id}`)
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'settings',
+        filter: `user_id=eq.${user.id}` 
+      }, fetchSettings)
       .subscribe();
 
     const profilesSubscription = user.email === ADMIN_EMAIL ? supabase
       .channel('public:profiles')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchData)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, fetchAdminData)
       .subscribe() : null;
 
     return () => {
@@ -309,6 +347,18 @@ export function useStorage() {
 
   const addCustomer = async (customer: Omit<Customer, 'id' | 'createdAt' | 'createdBy'>) => {
     if (!user) return null;
+    
+    // Optimistic update
+    const tempId = Math.random().toString(36).substring(7);
+    const newCustomer: Customer = {
+      ...customer,
+      id: tempId,
+      createdAt: new Date().toISOString(),
+      createdBy: user.id
+    };
+    
+    setCustomers(prev => [...prev, newCustomer]);
+
     try {
       const { data, error } = await supabase
         .from('customers')
@@ -323,6 +373,14 @@ export function useStorage() {
         .single();
       
       if (error) throw error;
+      
+      // Update with real data
+      setCustomers(prev => prev.map(c => c.id === tempId ? {
+        ...data,
+        createdAt: data.created_at,
+        createdBy: data.user_id
+      } : c));
+
       return {
         ...data,
         createdAt: data.created_at,
@@ -330,11 +388,17 @@ export function useStorage() {
       };
     } catch (error) {
       console.error('Error adding customer:', error);
+      // Rollback
+      setCustomers(prev => prev.filter(c => c.id !== tempId));
       return null;
     }
   };
 
   const updateCustomer = async (id: string, customerData: Partial<Customer>) => {
+    // Optimistic update
+    const originalCustomers = [...customers];
+    setCustomers(prev => prev.map(c => c.id === id ? { ...c, ...customerData } : c));
+
     try {
       const { error } = await supabase
         .from('customers')
@@ -350,11 +414,17 @@ export function useStorage() {
       return true;
     } catch (error) {
       console.error('Error updating customer:', error);
+      // Rollback
+      setCustomers(originalCustomers);
       return false;
     }
   };
 
   const deleteCustomer = async (id: string) => {
+    // Optimistic update
+    const originalCustomers = [...customers];
+    setCustomers(prev => prev.filter(c => c.id !== id));
+
     try {
       const { error } = await supabase
         .from('customers')
@@ -365,12 +435,28 @@ export function useStorage() {
       return true;
     } catch (error) {
       console.error('Error deleting customer:', error);
+      // Rollback
+      setCustomers(originalCustomers);
       return false;
     }
   };
 
   const addLoan = async (loan: Omit<Loan, 'id' | 'createdAt' | 'createdBy' | 'status' | 'remainingAmount'>) => {
     if (!user) return null;
+
+    // Optimistic update
+    const tempId = Math.random().toString(36).substring(7);
+    const newLoan: Loan = {
+      ...loan,
+      id: tempId,
+      status: 'active',
+      remainingAmount: loan.totalToPay,
+      createdAt: new Date().toISOString(),
+      createdBy: user.id
+    };
+
+    setLoans(prev => [newLoan, ...prev]);
+
     try {
       const { data, error } = await supabase
         .from('loans')
@@ -392,6 +478,19 @@ export function useStorage() {
         .single();
       
       if (error) throw error;
+
+      // Update with real data
+      setLoans(prev => prev.map(l => l.id === tempId ? {
+        ...data,
+        customerId: data.customer_id,
+        customerName: data.customer_name,
+        totalToPay: data.total_to_pay,
+        remainingAmount: data.remaining_amount,
+        installmentsCount: data.installments,
+        createdAt: data.created_at,
+        createdBy: data.user_id
+      } : l));
+
       return {
         ...data,
         customerId: data.customer_id,
@@ -404,6 +503,8 @@ export function useStorage() {
       };
     } catch (error) {
       console.error('Error adding loan:', error);
+      // Rollback
+      setLoans(prev => prev.filter(l => l.id !== tempId));
       return null;
     }
   };
@@ -444,6 +545,31 @@ export function useStorage() {
 
   const addPayment = async (paymentData: Omit<Payment, 'id' | 'createdBy'>) => {
     if (!user) return null;
+
+    // Optimistic update
+    const tempId = Math.random().toString(36).substring(7);
+    const newPayment: Payment = {
+      ...paymentData,
+      id: tempId,
+      createdBy: user.id
+    };
+
+    const originalPayments = [...payments];
+    const originalLoans = [...loans];
+
+    setPayments(prev => [newPayment, ...prev]);
+    setLoans(prev => prev.map(l => {
+      if (l.id === paymentData.loanId) {
+        const newRemaining = Math.max(0, l.remainingAmount - paymentData.amount);
+        return {
+          ...l,
+          remainingAmount: newRemaining,
+          status: newRemaining <= 0 ? 'paid' : l.status
+        };
+      }
+      return l;
+    }));
+
     try {
       // 1. Add payment
       const { data: payment, error: paymentError } = await supabase
@@ -482,6 +608,13 @@ export function useStorage() {
       
       if (loanUpdateError) throw loanUpdateError;
 
+      // Update with real data
+      setPayments(prev => prev.map(p => p.id === tempId ? {
+        ...payment,
+        loanId: payment.loan_id,
+        createdBy: payment.user_id
+      } : p));
+
       return {
         ...payment,
         loanId: payment.loan_id,
@@ -489,6 +622,9 @@ export function useStorage() {
       };
     } catch (error) {
       console.error('Error adding payment:', error);
+      // Rollback
+      setPayments(originalPayments);
+      setLoans(originalLoans);
       return null;
     }
   };
@@ -519,9 +655,12 @@ export function useStorage() {
           logo_url: newSettings.logoUrl,
           theme: newSettings.darkMode ? 'dark' : 'light',
           accent_color: newSettings.accentColor
+        }, {
+          onConflict: 'user_id'
         });
       
       if (error) throw error;
+      setSettings(newSettings);
       return true;
     } catch (error) {
       console.error('Error saving settings:', error);
