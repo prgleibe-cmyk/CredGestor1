@@ -29,6 +29,7 @@ import { PaymentModal } from './components/Modals/PaymentModal';
 import { formatPhoneForWhatsApp, formatCurrency } from './utils/formatters';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { InstallPrompt } from './components/InstallPrompt';
 
 // Memoized Views
 const MemoizedDashboardView = React.memo(DashboardView);
@@ -566,6 +567,7 @@ function AppContent() {
           }
         }}
       />
+      <InstallPrompt />
     </>
   );
 }
