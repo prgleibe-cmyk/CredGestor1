@@ -70,30 +70,30 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
         exit={{ y: "100%", opacity: 0, scale: 0.9 }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full max-w-2xl rounded-t-[4rem] md:rounded-[4rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-border-main relative overflow-hidden"
+        className="glass-card w-full max-w-2xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-[0_30px_100px_rgba(0,0,0,0.15)] flex flex-col h-[94vh] md:h-auto md:max-h-[92vh] border-t md:border border-border-main relative overflow-hidden"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         
-        <div className="p-8 md:p-10 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[4rem] md:rounded-t-[4rem] bg-text-main/5 relative z-10">
+        <div className="p-6 md:p-8 border-b border-border-main flex justify-between items-center gap-6 shrink-0 rounded-t-[2.5rem] md:rounded-t-[3rem] bg-text-main/5 relative z-10">
           <div className="md:hidden absolute top-4 left-1/2 -translate-x-1/2 w-20 h-1.5 bg-text-main/10 rounded-full shadow-inner" />
-          <h3 className="text-3xl font-display font-black text-text-main truncate flex-1 tracking-tighter">Novo Empréstimo</h3>
+          <h3 className="text-2xl font-display font-black text-text-main truncate flex-1 tracking-tighter">Novo Empréstimo</h3>
           <button 
             onClick={onClose} 
-            className="p-4 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-border-main shadow-inner"
+            className="p-3 btn-gradient-slate text-white rounded-2xl transition-all hover:scale-110 active:scale-90 shrink-0 border border-border-main shadow-inner"
           >
             <X size={24} strokeWidth={2.5} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8 overflow-y-auto relative z-10 custom-scrollbar">
-          <div className="space-y-3">
+        <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-6 overflow-y-auto relative z-10 custom-scrollbar">
+          <div className="space-y-2">
             <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Cliente</label>
             <div className="relative">
               <select 
                 required
                 value={formData.customerId}
                 onChange={e => setFormData({...formData, customerId: e.target.value})}
-                className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all appearance-none shadow-inner"
+                className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all appearance-none shadow-inner"
               >
                 <option value="" className="bg-bg-main">Selecione um cliente</option>
                 {customers.map(c => (
@@ -108,8 +108,8 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-5">
+            <div className="space-y-2">
               <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Valor (R$)</label>
               <input 
                 type="number" 
@@ -117,11 +117,11 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
                 min="1"
                 value={formData.amount || ''}
                 onChange={e => setFormData({...formData, amount: Number(e.target.value)})}
-                className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
+                className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
                 placeholder="0,00"
               />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Juros (%)</label>
               <input 
                 type="number" 
@@ -130,43 +130,43 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
                 step="0.01"
                 value={formData.interestRate}
                 onChange={e => setFormData({...formData, interestRate: Number(e.target.value)})}
-                className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all shadow-inner"
+                className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all shadow-inner"
               />
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Tipo de Juros</label>
-            <div className="flex p-2 bg-text-main/5 border border-border-main rounded-[2rem] w-full gap-2 shadow-inner">
+            <div className="flex p-1.5 bg-text-main/5 border border-border-main rounded-[1.5rem] w-full gap-1.5 shadow-inner">
               <button
                 type="button"
                 onClick={() => setFormData({...formData, interestType: 'simple'})}
-                className={`flex-1 py-3.5 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group/btn ${
-                  formData.interestType === 'simple' ? 'text-white shadow-2xl shadow-emerald-500/20' : 'text-text-muted hover:text-text-main'
+                className={`flex-1 py-3 rounded-[1rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group/btn ${
+                  formData.interestType === 'simple' ? 'text-white shadow-lg shadow-brand-500/20' : 'text-text-muted hover:text-text-main'
                 }`}
               >
                 {formData.interestType === 'simple' && (
-                  <motion.div layoutId="interestType" className="absolute inset-0 btn-gradient rounded-[1.5rem] -z-10" />
+                  <motion.div layoutId="interestType" className="absolute inset-0 btn-gradient rounded-[1rem] -z-10" />
                 )}
                 <span className="relative z-10">Fixo (Simples)</span>
               </button>
               <button
                 type="button"
                 onClick={() => setFormData({...formData, interestType: 'compound'})}
-                className={`flex-1 py-3.5 rounded-[1.5rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group/btn ${
-                  formData.interestType === 'compound' ? 'text-white shadow-2xl shadow-emerald-500/20' : 'text-text-muted hover:text-text-main'
+                className={`flex-1 py-3 rounded-[1rem] text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 relative overflow-hidden group/btn ${
+                  formData.interestType === 'compound' ? 'text-white shadow-lg shadow-brand-500/20' : 'text-text-muted hover:text-text-main'
                 }`}
               >
                 {formData.interestType === 'compound' && (
-                  <motion.div layoutId="interestType" className="absolute inset-0 btn-gradient rounded-[1.5rem] -z-10" />
+                  <motion.div layoutId="interestType" className="absolute inset-0 btn-gradient rounded-[1rem] -z-10" />
                 )}
                 <span className="relative z-10">Composto</span>
               </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-5">
+            <div className="space-y-2">
               <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Parcelas</label>
               <input 
                 type="number" 
@@ -174,16 +174,16 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
                 min="1"
                 value={formData.installmentsCount}
                 onChange={e => setFormData({...formData, installmentsCount: Number(e.target.value)})}
-                className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all shadow-inner"
+                className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all shadow-inner"
               />
             </div>
-            <div className="space-y-3">
+            <div className="space-y-2">
               <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Frequência</label>
               <div className="relative">
                 <select 
                   value={formData.frequency}
                   onChange={e => setFormData({...formData, frequency: e.target.value as Frequency})}
-                  className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all appearance-none shadow-inner"
+                  className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all appearance-none shadow-inner"
                 >
                   <option value="daily" className="bg-bg-main">Diário</option>
                   <option value="weekly" className="bg-bg-main">Semanal</option>
@@ -198,33 +198,33 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
             <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Data de Início</label>
             <input 
               type="date" 
               required
               value={formData.startDate}
               onChange={e => setFormData({...formData, startDate: e.target.value})}
-              className="w-full p-5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-base font-black text-text-main transition-all shadow-inner"
+              className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all shadow-inner"
             />
           </div>
 
-          <div className="p-8 bg-emerald-500/10 rounded-[2.5rem] border border-emerald-500/20 mt-4 relative overflow-hidden group shadow-inner">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+          <div className="p-6 bg-brand-500/10 rounded-[2rem] border border-brand-500/20 mt-2 relative overflow-hidden group shadow-inner">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
             <div className="flex justify-between items-center relative z-10">
-              <span className="text-emerald-600 font-black text-[11px] uppercase tracking-[0.3em]">Total a Receber:</span>
-              <span className="text-3xl font-display font-black text-text-main">{formatCurrency(totalToPay)}</span>
+              <span className="text-brand-600 font-black text-[10px] uppercase tracking-[0.3em]">Total a Receber:</span>
+              <span className="text-2xl font-display font-black text-text-main">{formatCurrency(totalToPay)}</span>
             </div>
-            <div className="h-px bg-text-main/10 my-5 relative z-10" />
-            <p className="text-[11px] text-text-muted uppercase font-black tracking-[0.3em] relative z-10">
+            <div className="h-px bg-text-main/10 my-4 relative z-10" />
+            <p className="text-[10px] text-text-muted uppercase font-black tracking-[0.3em] relative z-10">
               {formData.installmentsCount}x de <span className="text-text-main">{formatCurrency(totalToPay / formData.installmentsCount)}</span>
             </p>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button 
               type="submit"
-              className="relative overflow-hidden w-full py-6 btn-gradient text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-[1.5rem] active:scale-[0.98] group/btn"
+              className="relative overflow-hidden w-full py-5 btn-gradient text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] active:scale-[0.98] group/btn shadow-xl shadow-brand-500/20"
             >
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></div>
               <span className="relative z-10">Criar Empréstimo</span>

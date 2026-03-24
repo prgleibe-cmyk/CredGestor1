@@ -72,8 +72,8 @@ export const CustomerModal = memo(({ isOpen, onClose, onSave, customer }: Custom
           </button>
         </div>
  
-        <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-6 overflow-y-auto relative z-10 custom-scrollbar">
-          <div className="space-y-2.5">
+        <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-5 overflow-y-auto relative z-10 custom-scrollbar">
+          <div className="space-y-2">
             <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Nome Completo *</label>
             <input 
               type="text" 
@@ -81,44 +81,48 @@ export const CustomerModal = memo(({ isOpen, onClose, onSave, customer }: Custom
               placeholder="Ex: João Silva"
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
-              className="w-full p-4.5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
+              className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
             />
           </div>
-          <div className="space-y-2.5">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">CPF / Documento *</label>
-            <input 
-              type="text" 
-              required
-              placeholder="000.000.000-00"
-              value={formData.document}
-              onChange={e => setFormData({...formData, document: e.target.value})}
-              className="w-full p-4.5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-mono font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
-            />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">CPF / Documento *</label>
+              <input 
+                type="text" 
+                required
+                placeholder="000.000.000-00"
+                value={formData.document}
+                onChange={e => setFormData({...formData, document: e.target.value})}
+                className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-mono font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Telefone (Opcional)</label>
+              <input 
+                type="tel" 
+                placeholder="(00) 00000-0000"
+                value={formData.phone}
+                onChange={e => setFormData({...formData, phone: e.target.value})}
+                className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
+              />
+            </div>
           </div>
-          <div className="space-y-2.5">
-            <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Telefone (Opcional)</label>
-            <input 
-              type="tel" 
-              placeholder="(00) 00000-0000"
-              value={formData.phone}
-              onChange={e => setFormData({...formData, phone: e.target.value})}
-              className="w-full p-4.5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
-            />
-          </div>
-          <div className="space-y-2.5">
+
+          <div className="space-y-2">
             <label className="block text-[11px] font-black text-text-muted uppercase tracking-[0.3em] ml-2">Endereço (Opcional)</label>
             <textarea 
               placeholder="Rua, Número, Bairro, Cidade"
               value={formData.address}
               onChange={e => setFormData({...formData, address: e.target.value})}
-              className="w-full p-4.5 bg-text-main/5 border border-border-main rounded-[1.5rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 h-28 resize-none text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
+              className="w-full p-4 bg-text-main/5 border border-border-main rounded-[1.25rem] focus:outline-none focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 h-24 resize-none text-base font-black text-text-main transition-all placeholder:text-text-muted/40 shadow-inner"
             />
           </div>
 
-          <div className="pt-4">
+          <div className="pt-2">
             <button 
               type="submit"
-              className="relative overflow-hidden w-full py-5.5 btn-gradient text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-[1.5rem] active:scale-[0.98] group/btn shadow-xl shadow-brand-500/20"
+              className="relative overflow-hidden w-full py-5 btn-gradient text-white text-[12px] font-black uppercase tracking-[0.3em] rounded-[1.25rem] active:scale-[0.98] group/btn shadow-xl shadow-brand-500/20"
             >
               <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-shimmer"></div>
               <span className="relative z-10">{customer ? 'Salvar Alterações' : 'Cadastrar Cliente'}</span>
