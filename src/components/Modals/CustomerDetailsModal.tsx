@@ -14,11 +14,13 @@ import {
   Trash2,
   Edit2
 } from 'lucide-react';
+import { differenceInDays } from 'date-fns';
 import { Customer, Loan, Payment, Installment } from '../../types';
-import { formatCurrency, calculateCorrectedValue, differenceInDays, formatDate } from '../../lib/utils';
+import { formatCurrency, formatDate } from '../../utils/formatters';
 
 interface CustomerDetailsModalProps {
-  customer: Customer;
+  isOpen: boolean;
+  customer: Customer | null;
   loans: Loan[];
   payments: Payment[];
   onClose: () => void;
@@ -28,6 +30,7 @@ interface CustomerDetailsModalProps {
 }
 
 export function CustomerDetailsModal({ 
+  isOpen,
   customer, 
   loans, 
   payments, 
@@ -38,6 +41,8 @@ export function CustomerDetailsModal({
 }: CustomerDetailsModalProps) {
   const [activeTab, setActiveTab] = useState<'details' | 'history'>('details');
   const [selectedInstallmentNumber, setSelectedInstallmentNumber] = useState<number | null>(null);
+
+  if (!customer) return null;
 
   const lastLoan = loans[0];
   
@@ -68,7 +73,7 @@ export function CustomerDetailsModal({
     : null;
 
   const enrichedPayments = payments
-    .filter(p => p.customerId === customer.id)
+    .filter(p => loans.some(l => l.id === p.loanId))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .map(p => {
       const loan = loans.find(l => l.id === p.loanId);

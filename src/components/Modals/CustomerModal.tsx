@@ -31,8 +31,6 @@ export const CustomerModal = memo(({ isOpen, onClose, onSave, customer }: Custom
     }
   }, [customer]);
 
-  if (!isOpen) return null;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);

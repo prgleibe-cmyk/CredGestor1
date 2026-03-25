@@ -482,37 +482,49 @@ function AppContent() {
       </MainLayout>
 
       {/* Modals */}
-      <MemoizedLoanModal 
-        isOpen={isLoanModalOpen} 
-        onClose={() => setIsLoanModalOpen(false)} 
-        customers={customers}
-        settings={settings}
-        onSave={async (loan) => {
-          await addLoan(loan);
-          setIsLoanModalOpen(false);
-        }}
-      />
-      <MemoizedCustomerModal
-        isOpen={isCustomerModalOpen}
-        onClose={() => setIsCustomerModalOpen(false)}
-        customer={editingCustomer}
-        onSave={async (customerData) => {
-          if (editingCustomer) {
-            await updateCustomer(editingCustomer.id, customerData);
-          } else {
-            await addCustomer(customerData);
-          }
-          setIsCustomerModalOpen(false);
-        }}
-      />
-      <MemoizedPaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        loan={selectedLoan}
-        payments={payments}
-        customers={customers}
-        settings={settings}
-        onSave={async (paymentData, sendWhatsApp) => {
+      <AnimatePresence>
+        {isLoanModalOpen && (
+          <MemoizedLoanModal 
+            isOpen={isLoanModalOpen} 
+            onClose={() => setIsLoanModalOpen(false)} 
+            customers={customers}
+            settings={settings}
+            onSave={async (loan) => {
+              await addLoan(loan);
+              setIsLoanModalOpen(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isCustomerModalOpen && (
+          <MemoizedCustomerModal
+            isOpen={isCustomerModalOpen}
+            onClose={() => setIsCustomerModalOpen(false)}
+            customer={editingCustomer}
+            onSave={async (customerData) => {
+              if (editingCustomer) {
+                await updateCustomer(editingCustomer.id, customerData);
+              } else {
+                await addCustomer(customerData);
+              }
+              setIsCustomerModalOpen(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isPaymentModalOpen && (
+          <MemoizedPaymentModal
+            isOpen={isPaymentModalOpen}
+            onClose={() => setIsPaymentModalOpen(false)}
+            loan={selectedLoan}
+            payments={payments}
+            customers={customers}
+            settings={settings}
+            onSave={async (paymentData, sendWhatsApp) => {
           try {
             console.log('onSave paymentData:', paymentData, 'sendWhatsApp:', sendWhatsApp);
             
@@ -567,7 +579,9 @@ function AppContent() {
           }
         }}
       />
-      <InstallPrompt />
+    )}
+    </AnimatePresence>
+    <InstallPrompt />
     </>
   );
 }

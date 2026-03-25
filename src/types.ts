@@ -38,6 +38,13 @@ export interface Payment {
   createdBy: string;
 }
 
+export interface Installment {
+  number: number;
+  date: Date;
+  amount: number;
+  status: 'paid' | 'overdue' | 'upcoming' | 'pending';
+}
+
 export interface DashboardStats {
   totalLent: number;
   totalToReceive: number;

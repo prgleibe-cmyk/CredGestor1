@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Search, UserPlus, History, Eye } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 import { Customer, Loan, Payment } from '../types';
 import { CustomerDetailsModal } from '../components/Modals/CustomerDetailsModal';
 
@@ -171,25 +172,29 @@ export function CustomersView({ customers, loans, payments, onAdd, onRegisterPay
         </table>
       </div>
 
-      <CustomerDetailsModal 
-        isOpen={!!selectedCustomer}
-        onClose={() => setSelectedCustomer(null)}
-        customer={selectedCustomer}
-        loans={loans}
-        payments={payments}
-        onRegisterPayment={(loan) => {
-          setSelectedCustomer(null);
-          onRegisterPayment(loan);
-        }}
-        onEdit={(customer) => {
-          setSelectedCustomer(null);
-          onEdit(customer);
-        }}
-        onDelete={(id) => {
-          setSelectedCustomer(null);
-          onDelete(id);
-        }}
-      />
+      <AnimatePresence>
+        {selectedCustomer && (
+          <CustomerDetailsModal 
+            isOpen={!!selectedCustomer}
+            onClose={() => setSelectedCustomer(null)}
+            customer={selectedCustomer}
+            loans={loans.filter(l => l.customerId === selectedCustomer.id)}
+            payments={payments}
+            onRegisterPayment={(loan) => {
+              setSelectedCustomer(null);
+              onRegisterPayment(loan);
+            }}
+            onEdit={(customer) => {
+              setSelectedCustomer(null);
+              onEdit(customer);
+            }}
+            onDelete={(id) => {
+              setSelectedCustomer(null);
+              onDelete(id);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

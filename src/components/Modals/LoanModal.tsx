@@ -45,8 +45,6 @@ export function LoanModal({ isOpen, onClose, customers, onSave, settings }: Loan
     }
   }, [formData.amount, formData.interestRate, formData.interestType, formData.installmentsCount]);
 
-  if (!isOpen) return null;
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const customer = customers.find(c => c.id === formData.customerId);

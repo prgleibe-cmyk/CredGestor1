@@ -30,7 +30,7 @@ export function PaymentModal({ isOpen, onClose, loan, payments, customers, setti
     return calculateCorrectedValue(loan, payments);
   }, [loan, payments]);
 
-  if (!isOpen || !loan) return null;
+  if (!loan) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
