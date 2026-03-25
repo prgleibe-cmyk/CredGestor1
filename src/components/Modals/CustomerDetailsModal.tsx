@@ -12,7 +12,8 @@ import {
   History as HistoryIcon,
   Eye,
   Trash2,
-  Edit2
+  Edit2,
+  TrendingUp
 } from 'lucide-react';
 import { differenceInDays } from 'date-fns';
 import { Customer, Loan, Payment, Installment } from '../../types';
@@ -221,11 +222,11 @@ export function CustomerDetailsModal({
  
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                           <div className="bg-text-main/5 p-6 rounded-[1.5rem] border border-border-main shadow-inner group/card hover:bg-text-main/10 transition-all">
-                            <p className="text-[11px] uppercase font-black text-text-muted tracking-[0.3em] mb-2 group-hover/card:text-brand-600 transition-colors">Data de Vencimento</p>
+                            <p className="text-[7px] uppercase font-black text-text-muted tracking-[0.3em] mb-2 group-hover/card:text-brand-600 transition-colors">Data de Vencimento</p>
                             <p className="text-3xl font-display font-black text-text-main">{formatDate(selectedInstallment.date.toISOString())}</p>
                           </div>
                           <div className="bg-text-main/5 p-6 rounded-[1.5rem] border border-border-main shadow-inner group/card hover:bg-text-main/10 transition-all">
-                            <p className="text-[11px] uppercase font-black text-text-muted tracking-[0.3em] mb-2 group-hover/card:text-brand-600 transition-colors">Valor da Parcela</p>
+                            <p className="text-[7px] uppercase font-black text-text-muted tracking-[0.3em] mb-2 group-hover/card:text-brand-600 transition-colors">Valor da Parcela</p>
                             <p className="text-3xl font-display font-black text-brand-600">{formatCurrency(selectedInstallment.amount)}</p>
                           </div>
                         </div>
@@ -278,14 +279,19 @@ export function CustomerDetailsModal({
                         {/* Loan Summary Cards */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                           {[
-                            { label: 'Total', value: formatCurrency(lastLoan.totalToPay), bg: 'bg-brand-500/10', text: 'text-brand-600', border: 'border-brand-500/20' },
-                            { label: 'Pago', value: formatCurrency(lastLoan.totalToPay - lastLoan.remainingAmount), bg: 'bg-brand-500/10', text: 'text-brand-600', border: 'border-brand-500/20' },
-                            { label: 'Saldo', value: formatCurrency(lastLoan.remainingAmount), bg: 'bg-amber-500/10', text: 'text-amber-600', border: 'border-amber-500/20' },
-                            { label: 'Parcelas', value: `${lastLoan.installmentsCount}x`, bg: 'bg-brand-500/10', text: 'text-brand-600', border: 'border-brand-500/20' }
+                            { label: 'Total do Empréstimo', value: formatCurrency(lastLoan.totalToPay), icon: TrendingUp, color: 'text-brand-600', bg: 'bg-brand-500/10' },
+                            { label: 'Total Pago', value: formatCurrency(lastLoan.totalToPay - lastLoan.remainingAmount), icon: CheckCircle2, color: 'text-brand-600', bg: 'bg-brand-500/10' },
+                            { label: 'Saldo Restante', value: formatCurrency(lastLoan.remainingAmount), icon: DollarSign, color: 'text-amber-600', bg: 'bg-amber-500/10' },
+                            { label: 'Total de Parcelas', value: `${lastLoan.installmentsCount}x`, icon: Calendar, color: 'text-brand-600', bg: 'bg-brand-500/10' }
                           ].map((item, i) => (
-                            <div key={i} className={`${item.bg} p-4 rounded-[1.25rem] border ${item.border} shadow-inner group hover:scale-105 transition-transform duration-500`}>
-                              <p className={`text-[10px] uppercase font-black ${item.text} tracking-[0.3em] mb-1 opacity-70`}>{item.label}</p>
-                              <p className={`text-lg font-display font-black ${item.text}`}>{item.value}</p>
+                            <div key={i} className="glass-card p-4 rounded-xl border border-border-main shadow-sm group hover:border-text-main/30 transition-all duration-700 relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-16 h-16 bg-text-main/5 rounded-full -mr-8 -mt-8 blur-2xl transition-all duration-700 group-hover:bg-text-main/10"></div>
+                              <div className={`w-8 h-8 ${item.bg} ${item.color} rounded-lg flex items-center justify-center mb-3 shadow-inner relative z-10 group-hover:scale-110 transition-transform duration-500`}>
+                                <item.icon size={16} strokeWidth={2.5} />
+                              </div>
+                              <p className="text-[7px] font-black text-text-muted uppercase tracking-[0.3em] mb-1 relative z-10">{item.label}</p>
+                              <h3 className={`text-lg font-display font-black leading-none tracking-tighter relative z-10 ${item.color === 'text-text-main' ? 'accent-glow' : item.color}`}>{item.value}</h3>
+                              <p className="text-[7px] text-text-muted mt-2 font-black uppercase tracking-[0.2em] opacity-60 relative z-10">Resumo Atual</p>
                             </div>
                           ))}
                         </div>
@@ -330,7 +336,7 @@ export function CustomerDetailsModal({
                                     {inst.status === 'upcoming' && <Clock size={16} strokeWidth={2.5} className="text-brand-600" />}
                                   </div>
                                 </div>
-                                <p className="text-[10px] font-black text-text-muted uppercase tracking-widest relative z-10">{formatDate(inst.date.toISOString())}</p>
+                                <p className="text-[7px] font-black text-text-muted uppercase tracking-widest relative z-10">{formatDate(inst.date.toISOString())}</p>
                                 <p className="text-base font-display font-black text-text-main mt-0.5 relative z-10">{formatCurrency(inst.amount)}</p>
                                 
                                 <div className="absolute inset-0 bg-text-main/0 group-hover:bg-text-main/5 transition-colors" />
