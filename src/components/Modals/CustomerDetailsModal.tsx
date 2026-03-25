@@ -85,7 +85,7 @@ export function CustomerDetailsModal({
 
   return (
     <div 
-      className="fixed inset-0 z-[100] bg-text-main/40 backdrop-blur-xl overflow-hidden"
+      className="fixed inset-0 z-[100] bg-bg-main/95 backdrop-blur-md overflow-hidden flex items-center justify-center md:p-4"
       onClick={onClose}
     >
       <motion.div 
@@ -94,7 +94,7 @@ export function CustomerDetailsModal({
         exit={{ y: "100%", opacity: 0 }}
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
-        className="glass-card w-full h-full flex flex-col relative overflow-hidden"
+        className="bg-bg-card w-full h-full md:max-w-[98vw] md:h-[98vh] md:rounded-[2.5rem] flex flex-col relative overflow-hidden border border-border-main shadow-2xl"
       >
         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-transparent via-border-main to-transparent"></div>
         

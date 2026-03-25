@@ -26,6 +26,7 @@ import { AdminView } from './views/AdminView';
 import { LoanModal } from './components/Modals/LoanModal';
 import { CustomerModal } from './components/Modals/CustomerModal';
 import { PaymentModal } from './components/Modals/PaymentModal';
+import { CustomerDetailsModal } from './components/Modals/CustomerDetailsModal';
 import { formatPhoneForWhatsApp, formatCurrency } from './utils/formatters';
 
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -44,6 +45,7 @@ const MemoizedAdminView = React.memo(AdminView);
 const MemoizedLoanModal = React.memo(LoanModal);
 const MemoizedCustomerModal = React.memo(CustomerModal);
 const MemoizedPaymentModal = React.memo(PaymentModal);
+const MemoizedCustomerDetailsModal = React.memo(CustomerDetailsModal);
 
 function LoginScreen() {
   const [isLogin, setIsLogin] = useState(true);
@@ -338,6 +340,7 @@ function AppContent() {
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedCustomerDetails, setSelectedCustomerDetails] = useState<Customer | null>(null);
   const [selectedLoan, setSelectedLoan] = useState<Loan | null>(null);
   const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
@@ -456,6 +459,9 @@ function AppContent() {
               setSelectedLoan(loan);
               setIsPaymentModalOpen(true);
             }}
+            onViewDetails={(customer) => {
+              setSelectedCustomerDetails(customer);
+            }}
           />
         )}
         {activeView === 'loans' && <MemoizedLoansView loans={loans} onPayment={handleOpenPayment} />}
@@ -482,6 +488,32 @@ function AppContent() {
       </MainLayout>
 
       {/* Modals */}
+      <AnimatePresence>
+        {selectedCustomerDetails && (
+          <MemoizedCustomerDetailsModal 
+            isOpen={!!selectedCustomerDetails}
+            onClose={() => setSelectedCustomerDetails(null)}
+            customer={selectedCustomerDetails}
+            loans={loans.filter(l => l.customerId === selectedCustomerDetails.id)}
+            payments={payments}
+            onRegisterPayment={(loan) => {
+              setSelectedCustomerDetails(null);
+              setSelectedLoan(loan);
+              setIsPaymentModalOpen(true);
+            }}
+            onEdit={(customer) => {
+              setSelectedCustomerDetails(null);
+              setEditingCustomer(customer);
+              setIsCustomerModalOpen(true);
+            }}
+            onDelete={async (id) => {
+              setSelectedCustomerDetails(null);
+              await deleteCustomer(id);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {isLoanModalOpen && (
           <MemoizedLoanModal 

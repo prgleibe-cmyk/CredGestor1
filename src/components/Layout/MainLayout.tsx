@@ -43,18 +43,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-brand-500/10 rounded-full blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-brand-500/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '3s' }}></div>
         
-        {/* Floating Glass Elements */}
-        <motion.div 
-          animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[20%] right-[15%] w-64 h-64 bg-bg-card/40 backdrop-blur-3xl rounded-[3rem] border border-border-main/20 shadow-2xl hidden lg:block"
-        />
-        <motion.div 
-          animate={{ y: [0, 30, 0], rotate: [0, -10, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute bottom-[10%] left-[5%] w-48 h-48 bg-bg-card/40 backdrop-blur-2xl rounded-[2.5rem] border border-border-main/20 shadow-2xl hidden lg:block"
-        />
-
         <div className="absolute inset-0 bg-[radial-gradient(var(--color-text-main)_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.05]"></div>
         
         {/* Crumpled Texture Overlay */}

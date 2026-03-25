@@ -12,11 +12,11 @@ interface CustomersViewProps {
   onRegisterPayment: (loan: Loan) => void;
   onEdit: (customer: Customer) => void;
   onDelete: (customerId: string) => void;
+  onViewDetails: (customer: Customer) => void;
 }
 
-export function CustomersView({ customers, loans, payments, onAdd, onRegisterPayment, onEdit, onDelete }: CustomersViewProps) {
+export function CustomersView({ customers, loans, payments, onAdd, onRegisterPayment, onEdit, onDelete, onViewDetails }: CustomersViewProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const filteredCustomers = useMemo(() => {
     const term = searchTerm.toLowerCase();
@@ -94,7 +94,7 @@ export function CustomersView({ customers, loans, payments, onAdd, onRegisterPay
                 <tr 
                   key={customer.id} 
                   className="hover:bg-text-main/5 transition-all duration-500 cursor-pointer group/row"
-                  onClick={() => setSelectedCustomer(customer)}
+                  onClick={() => onViewDetails(customer)}
                 >
                   <td className="px-4 py-2.5">
                     <div className="flex items-center gap-2">
@@ -171,30 +171,6 @@ export function CustomersView({ customers, loans, payments, onAdd, onRegisterPay
           </tbody>
         </table>
       </div>
-
-      <AnimatePresence>
-        {selectedCustomer && (
-          <CustomerDetailsModal 
-            isOpen={!!selectedCustomer}
-            onClose={() => setSelectedCustomer(null)}
-            customer={selectedCustomer}
-            loans={loans.filter(l => l.customerId === selectedCustomer.id)}
-            payments={payments}
-            onRegisterPayment={(loan) => {
-              setSelectedCustomer(null);
-              onRegisterPayment(loan);
-            }}
-            onEdit={(customer) => {
-              setSelectedCustomer(null);
-              onEdit(customer);
-            }}
-            onDelete={(id) => {
-              setSelectedCustomer(null);
-              onDelete(id);
-            }}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 }
